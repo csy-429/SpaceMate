@@ -9,37 +9,41 @@ from app.models.schemas import Space, Review, Product
 SPACES: list[Space] = [
     Space(
         id="sp01", name="강남 스퀘어 회의실 A", type="회의실", region="강남구",
-        capacity=8, price_per_hour_day=15000, price_per_hour_night=20000,
+        capacity=8, price_per_hour_weekday=15000, price_per_hour_weekend=20000,
         facilities=["화이트보드", "빔프로젝터", "와이파이"], popularity=92,
         image_url="https://placehold.co/400x300?text=Space+A",
     ),
     Space(
         id="sp02", name="서초 컨퍼런스룸", type="회의실", region="서초구",
-        capacity=12, price_per_hour_day=20000, price_per_hour_night=25000,
+        capacity=12, price_per_hour_weekday=20000, price_per_hour_weekend=25000,
         facilities=["화상회의 장비", "화이트보드", "커피머신"], popularity=78,
         image_url="https://placehold.co/400x300?text=Space+B",
     ),
+    # sp03 = 시연용 기준 공간. "[합정역1분거리파티룸] 스페이스T" 실제 리스팅 값 그대로 맞춤.
     Space(
         id="sp03", name="홍대 파티룸 문라이트", type="파티룸", region="홍대",
-        capacity=15, price_per_hour_day=30000, price_per_hour_night=45000,
+        capacity=10, price_per_hour_weekday=13000, price_per_hour_weekend=18000,
         facilities=["빔프로젝터", "블루투스 스피커", "미러볼"], popularity=95,
         image_url="https://placehold.co/400x300?text=Space+C",
+        price_package=100000, package_hours="18:00~익일 08:00",
+        base_capacity=6, extra_person_fee=10000,
     ),
     Space(
         id="sp04", name="성수동 루프탑 파티룸", type="파티룸", region="성수동",
-        capacity=20, price_per_hour_day=35000, price_per_hour_night=50000,
+        capacity=20, price_per_hour_weekday=35000, price_per_hour_weekend=50000,
         facilities=["루프탑", "블루투스 스피커", "테이블세팅"], popularity=88,
         image_url="https://placehold.co/400x300?text=Space+D",
+        price_package=110000, package_hours="18:00~익일 08:00",
     ),
     Space(
         id="sp05", name="마포 공유주방 키친랩", type="공유주방", region="마포구",
-        capacity=6, price_per_hour_day=18000, price_per_hour_night=22000,
+        capacity=6, price_per_hour_weekday=18000, price_per_hour_weekend=22000,
         facilities=["4구 인덕션", "오븐", "식기세트"], popularity=70,
         image_url="https://placehold.co/400x300?text=Space+E",
     ),
     Space(
         id="sp06", name="잠실 베이킹 스튜디오", type="공유주방", region="잠실",
-        capacity=8, price_per_hour_day=22000, price_per_hour_night=28000,
+        capacity=8, price_per_hour_weekday=22000, price_per_hour_weekend=28000,
         facilities=["오븐 2대", "냉장고", "식기세트", "앞치마 대여"], popularity=81,
         image_url="https://placehold.co/400x300?text=Space+F",
     ),

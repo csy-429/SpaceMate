@@ -35,7 +35,7 @@ def list_spaces(filters: dict) -> list[Space]:
 
     sort_by = filters.get("sort")
     if sort_by == "price":
-        result = sorted(result, key=lambda s: s.price_per_hour_day)
+        result = sorted(result, key=lambda s: s.price_per_hour_weekday)
     elif sort_by == "popularity":
         result = sorted(result, key=lambda s: -s.popularity)
     return result
@@ -71,19 +71,52 @@ def list_pending_groups() -> list[ReviewGroup]:
 
 
 # ---- Reservation [클론] ----
-def create_reservation(space_id: str, date_: date, time_slots: list[str]) -> ReservationResult | None:
+def calculate_hourly_price(space: Space, date_: date, hours: int) -> int:
+    """예약 날짜가 평일이면 평일요금, 토/일이면 주말요금 (공휴일은 MVP 범위 밖, 단순화).
+    시간대(주간/야간) 구분은 없음 — 해당 날짜 요금 x 시간수."""
+    is_weekend = date_.weekday() >= 5  # 5=토, 6=일
+    rate = space.price_per_hour_weekend if is_weekend else space.price_per_hour_weekday
+    return rate * hours
+
+
+def calculate_extra_guest_fee(space: Space, guest_count: int) -> int:
+    """기준인원(base_capacity) 초과 시 인당 extra_person_fee 추가. base_capacity 없으면 0."""
+    if space.base_capacity is None or guest_count <= space.base_capacity:
+        return 0
+    return (guest_count - space.base_capacity) * space.extra_person_fee
+
+
+def create_reservation(
+    space_id: str,
+    date_: date,
+    reservation_type: str,
+    start_hour: int | None = None,
+    hours: int | None = None,
+    guest_count: int = 1,
+) -> ReservationResult | None:
     space = get_space(space_id)
     if not space:
         return None
-    price = sum(
-        space.price_per_hour_night if slot == "저녁" else space.price_per_hour_day
-        for slot in time_slots
-    )
+
+    if reservation_type == "package":
+        if space.price_package is None:
+            return None  # 이 공간은 패키지 예약 미제공
+        price = space.price_package
+    else:
+        if start_hour is None or hours is None:
+            return None
+        price = calculate_hourly_price(space, date_, hours)
+
+    price += calculate_extra_guest_fee(space, guest_count)
+
     result = ReservationResult(
         reservation_id=str(uuid.uuid4())[:8],
         space_id=space_id,
         date=date_,
-        time_slots=time_slots,
+        reservation_type=reservation_type,
+        start_hour=start_hour,
+        hours=hours,
+        guest_count=guest_count,
         total_price=price,
     )
     _reservations[result.reservation_id] = result

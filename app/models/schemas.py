@@ -15,12 +15,16 @@ class Space(BaseModel):
     name: str
     type: Literal["회의실", "파티룸", "공유주방"]
     region: str
-    capacity: int
-    price_per_hour_day: int    # 주간(09-18) 시간당 요금
-    price_per_hour_night: int  # 야간(18-24) 시간당 요금
+    capacity: int               # 최대 수용 인원
+    price_per_hour_weekday: int  # 평일 시간당 요금
+    price_per_hour_weekend: int  # 주말/공휴일 시간당 요금
     facilities: list[str]
     popularity: int            # 베스트순 정렬용
     image_url: str
+    price_package: int | None = None      # 올나잇 패키지 고정가 (미제공 공간은 None)
+    package_hours: str | None = None      # 패키지 시간대 표시용, 예: "18:00~익일 08:00"
+    base_capacity: int | None = None      # 기준 인원 (초과 시 인당 추가요금 발생, 없으면 초과요금 미적용)
+    extra_person_fee: int = 0             # 기준 인원 초과 시 인당 추가요금
 
 
 class Review(BaseModel):
@@ -58,14 +62,20 @@ class CartEntry(CartItem):
 class ReservationRequest(BaseModel):
     space_id: str
     date: date
-    time_slots: list[Literal["오전", "오후", "저녁"]]
+    reservation_type: Literal["hourly", "package"] = "hourly"
+    start_hour: int | None = None   # hourly 전용, 0~23
+    hours: int | None = None        # hourly 전용, 최소 예약시간 이상
+    guest_count: int = 1            # 예약 인원
 
 
 class ReservationResult(BaseModel):
     reservation_id: str
     space_id: str
     date: date
-    time_slots: list[str]
+    reservation_type: Literal["hourly", "package"]
+    start_hour: int | None = None
+    hours: int | None = None
+    guest_count: int = 1
     total_price: int
     status: Literal["confirmed"] = "confirmed"
 
