@@ -32,6 +32,8 @@ class Review(BaseModel):
     space_id: str
     content: str
     author: str = "익명"
+    rating: int
+    created_at: date
 
 
 class ReviewGroup(BaseModel):
