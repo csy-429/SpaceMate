@@ -9,7 +9,7 @@ CSV 전체가 시연용 공간 sp03("[합정역1분거리파티룸] 스페이스
 [수정 이력]
 - encoding="utf-8" -> "utf-8-sig" 로 변경.
   CSV가 BOM 포함으로 저장되어 있어서, "utf-8"로 열면 첫 컬럼명이 "id"가 아니라
-  "\ufeffid"로 인식되어 row["id"]에서 KeyError가 나고 모든 행이 조용히 스킵되던 버그 수정.
+  "﻿id"로 인식되어 row["id"]에서 KeyError가 나고 모든 행이 조용히 스킵되던 버그 수정.
   (except (KeyError, ValueError): continue 가 이 에러를 삼켜서 증상이 안 보였음 — 367건 전부
   로드 실패해도 함수는 그냥 빈 리스트를 반환할 뿐 에러가 안 남)
 - author=row["username"].strip() 그대로 저장하던 부분을 mask_nickname()으로 마스킹.
@@ -18,6 +18,7 @@ CSV 전체가 시연용 공간 sp03("[합정역1분거리파티룸] 스페이스
 import csv
 from datetime import datetime
 from pathlib import Path
+
 from app.models.schemas import Review
 from app.services.review_grouping import mask_nickname
 

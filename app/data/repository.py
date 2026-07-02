@@ -15,10 +15,8 @@ from app.models.schemas import (
     CartEntry, ReservationResult, Order,
 )
 from app.data.seed import SPACES, PRODUCTS, REVIEWS
-from app.data.reviews_loader import load_crawled_reviews
 
 # ---- 런타임 상태 (메모리) ----
-_crawled_reviews_cache: list[Review] | None = None  # sp03 실제 크롤링 후기(367건) 지연 로드
 _review_groups: list[ReviewGroup] = []            # AI 생성 그룹, 최초엔 비어있음
 _cart: dict[str, list[CartEntry]] = {}             # session_id -> items
 _reservations: dict[str, ReservationResult] = {}   # reservation_id -> result
@@ -49,14 +47,8 @@ def get_space(space_id: str) -> Space | None:
 
 # ---- Review / ReviewGroup [클론 + 신규] ----
 def get_reviews(space_id: str) -> list[Review]:
-    """sp03은 실제 크롤링된 후기(367건)가 있으면 그걸 우선 반환, 그 외 공간은 seed.py의
-    placeholder 후기를 반환. sp03의 seed.py placeholder 5건은 실데이터가 없을 때만 폴백으로 쓰임."""
-    if space_id == "sp03":
-        global _crawled_reviews_cache
-        if _crawled_reviews_cache is None:
-            _crawled_reviews_cache = load_crawled_reviews()
-        if _crawled_reviews_cache:
-            return _crawled_reviews_cache
+    """REVIEWS(seed.py)는 placeholder 후기 + sp03 실제 크롤링 후기(367건, reviews_loader)가
+    이미 합쳐진 리스트이므로 여기선 단순 필터링만 하면 됨."""
     return [r for r in REVIEWS if r.space_id == space_id]
 
 
