@@ -1,0 +1,352 @@
+<!DOCTYPE html><html lang="ko"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>SpaceMate - 공간 승인 관리 (관리자)</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@100..900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface": "#F8F7FB",
+                    "surface-dim": "#dcd9d9",
+                    "surface-bright": "#fcf9f8",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-low": "#f6f3f2",
+                    "surface-container": "#f0eded",
+                    "surface-container-high": "#eae7e7",
+                    "surface-container-highest": "#e5e2e1",
+                    "on-surface": "#1c1b1b",
+                    "on-surface-variant": "#494456",
+                    "outline": "#7a7487",
+                    "outline-variant": "#cac3d8",
+                    "primary": "#6d3af1",
+                    "on-primary": "#ffffff",
+                    "primary-container": "#e6dcff",
+                    "on-primary-container": "#20005f",
+                    "secondary": "#ab3500",
+                    "on-secondary": "#ffffff",
+                    "secondary-container": "#ffdbd0",
+                    "on-secondary-container": "#390c00",
+                    "tertiary": "#005925",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-container": "#6bff8f",
+                    "on-tertiary-container": "#002109",
+                    "error": "#EF4444",
+                    "on-error": "#ffffff",
+                    "background": "#fcf9f8",
+                    "on-background": "#1c1b1b",
+                    "border": "#E5E2ED",
+                    "brand-hover": "#5B2ED1",
+                    "accent-yellow": "#FFD014"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-lg": "24px",
+                    "stack-xl": "48px",
+                    "unit": "4px",
+                    "stack-xs": "4px",
+                    "margin-x": "24px",
+                    "stack-sm": "8px",
+                    "container-max": "1200px",
+                    "gutter": "16px",
+                    "stack-md": "16px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": ["Hanken Grotesk"],
+                    "label-md": ["Hanken Grotesk"],
+                    "caption": ["Hanken Grotesk"],
+                    "headline-md": ["Hanken Grotesk"],
+                    "headline-sm": ["Hanken Grotesk"],
+                    "body-md": ["Hanken Grotesk"],
+                    "headline-lg": ["Hanken Grotesk"]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "label-md": ["15px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "caption": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-sm": ["17px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "body-md": ["15px", {"lineHeight": "22px", "fontWeight": "400"}],
+                    "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Hanken Grotesk', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-surface-container-lowest border-b border-border sticky top-0 z-50 w-full h-16 flex items-center">
+<div class="flex items-center justify-between w-full max-w-[1200px] mx-auto px-margin-x">
+<div class="flex items-center gap-stack-lg">
+<span class="font-headline-lg text-headline-lg font-black text-primary">SpaceMate</span>
+<nav class="hidden md:flex items-center gap-stack-md ml-stack-lg">
+<a class="font-label-md text-label-md text-primary border-b-2 border-primary pb-1 font-bold" href="#">공간찾기</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">추천</a>
+</nav>
+</div>
+<div class="flex items-center gap-stack-md">
+<div class="hidden sm:flex items-center bg-surface-container-low border border-border rounded-full px-4 py-1.5 gap-2">
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md w-48" placeholder="검색어를 입력하세요" type="text">
+</div>
+<div class="flex items-center gap-stack-sm">
+<button class="material-symbols-outlined p-2 text-on-surface-variant hover:text-primary transition-all">person</button>
+<button class="material-symbols-outlined p-2 text-on-surface-variant hover:text-primary transition-all">logout</button>
+</div>
+</div>
+</div>
+</header>
+<!-- Sub Header Tabs -->
+<div class="bg-surface-container-lowest border-b border-border">
+<div class="max-w-[1200px] mx-auto px-margin-x flex gap-8">
+<button class="py-4 px-2 border-b-2 border-primary text-primary font-bold text-label-md">승인 대기</button>
+<button class="py-4 px-2 border-b-2 border-transparent text-on-surface-variant hover:text-primary text-label-md">승인 완료</button>
+<button class="py-4 px-2 border-b-2 border-transparent text-on-surface-variant hover:text-primary text-label-md">반려</button>
+</div>
+</div>
+<main class="flex-grow w-full max-w-[1200px] mx-auto px-margin-x py-stack-lg flex flex-col gap-stack-lg">
+<!-- Title & Filter Section -->
+<section class="flex flex-col md:flex-row md:items-end justify-between gap-stack-md">
+<div>
+<h1 class="font-headline-lg text-headline-lg mb-2">공간 승인 관리</h1>
+<p class="text-on-surface-variant text-body-md">AI 알고리즘으로 분석된 새로운 공간 제안들을 검토하세요.</p>
+</div>
+<div class="flex gap-2">
+<button class="bg-primary text-on-primary px-4 py-2 rounded-full text-label-md font-bold">전체</button>
+<button class="bg-surface-container-high text-on-surface-variant px-4 py-2 rounded-full text-label-md">오늘 등록</button>
+<button class="bg-surface-container-high text-on-surface-variant px-4 py-2 rounded-full text-label-md">긴급 검토</button>
+</div>
+</section>
+<!-- Main Content: Data Table Area -->
+<section class="bg-surface-container-lowest border border-border rounded-xl overflow-hidden shadow-sm">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low border-b border-border">
+<tr>
+<th class="px-6 py-4 text-label-md text-on-surface-variant font-semibold">공간명</th>
+<th class="px-6 py-4 text-label-md text-on-surface-variant font-semibold">AI 그룹화 조건</th>
+<th class="px-6 py-4 text-label-md text-on-surface-variant font-semibold">등록일시</th>
+<th class="px-6 py-4 text-label-md text-on-surface-variant font-semibold">상태</th>
+<th class="px-6 py-4 text-label-md text-on-surface-variant font-semibold text-right">관리</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high overflow-hidden">
+<img alt="Space" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCP35YIs8YCL0cu3fbG1V5SZDZiRS4PZASaObYFyMjgEW0X7GQfMA1P3PXCX5XvKiuUDmAxOp65S2vmqASM_TpHUR_rRWkn4GhATSAQzP3RQt1KadZx49LN0SvRq_W8MY2OQebLFvx83k8EKay_BdSDgrp8392rPQUj_ZNRa2WEPFRIIV7LJEe8Vtj70bTdi_pIHmoWaDaIxl6v79SW7aN6oSPOXp9sgYVecSajEqlf4_X41I9XpJBsKKB_d3AJy-r-kwgaoj-d7m26">
+</div>
+<div>
+<p class="font-label-md">네오 테크 스테이션</p>
+<p class="text-caption text-on-surface-variant">강남구 역삼동</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex gap-1.5 flex-wrap">
+<span class="bg-primary-container text-on-primary-container px-2 py-0.5 rounded text-caption font-bold">초고속 Wi-Fi</span>
+<span class="bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded text-caption font-bold">24시 운영</span>
+</div>
+</td>
+<td class="px-6 py-4 text-body-md text-on-surface-variant">2024.05.22 14:30</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5 text-on-surface-variant text-label-md">
+<span class="w-2 h-2 rounded-full bg-outline"></span> 승인 대기
+                                </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="bg-primary hover:bg-brand-hover text-on-primary px-4 py-1.5 rounded-lg text-label-md transition-all" onclick="window.location.href='{{DATA:SCREEN:SCREEN_4}}'">검토하기</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high overflow-hidden">
+<img alt="Space" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCscecxEqVndkz1qfsfabP-VLHnG3Ol8BrFO_khnET8GbaHEikfZ-KLvVHMeW63b0HPPAzTePec1ooOksU6D_YKmKueGJplb9WinVj-j2rzGDuktZ3GLyDxLdswjuEb27t2TEAXMe9bOCjJUsmXhGU9TeRLCg9kNoEc3oWlBjI7jO7sw4PHBFWlPhR1W4Jd0nacxAa6vY4cpF3BZCndIc64uHKKu4OJqt7jBIYMSm6ovvw0Tidaxg9r0hc0YjAs5oflXwIBuZgv9n-q">
+</div>
+<div>
+<p class="font-label-md">루미너스 크리에이티브 랩</p>
+<p class="text-caption text-on-surface-variant">마포구 성산동</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex gap-1.5 flex-wrap">
+<span class="bg-primary-container text-on-primary-container px-2 py-0.5 rounded text-caption font-bold">대형 모니터</span>
+<span class="bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded text-caption font-bold">방음 보장</span>
+</div>
+</td>
+<td class="px-6 py-4 text-body-md text-on-surface-variant">2024.05.22 13:15</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5 text-on-surface-variant text-label-md">
+<span class="w-2 h-2 rounded-full bg-outline"></span> 승인 대기
+                                </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="bg-primary hover:bg-brand-hover text-on-primary px-4 py-1.5 rounded-lg text-label-md transition-all" onclick="window.location.href='{{DATA:SCREEN:SCREEN_4}}'">검토하기</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high overflow-hidden">
+<img alt="Space" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4bfDuI8ERJM6KhAROxokeLnqmQkr7bvBYsBCGA_6X0f5h137ncs34ZrBPoxifGtEtNdThdha6e8tfYgRm53QLRbCq7Y1PB5zsMmt5qAGErndtEVB7-V3goE2GuaYfPRVuEgYV5hXz1w_csud-d-Qp9EQMJrd9T3WsaNoqsYaCYZJdLGaOoGR6rmWbNGlCsQGiardpWj9WYFf8yAXXHpH9yRt8kdhCrrX4a0L_E_uBYbN4Kr3-lhWHFCnymU5Ap1ywaOX5BNEXWX76">
+</div>
+<div>
+<p class="font-label-md">퀀텀 미팅 룸</p>
+<p class="text-caption text-on-surface-variant">서초구 반포동</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex gap-1.5 flex-wrap">
+<span class="bg-primary-container text-on-primary-container px-2 py-0.5 rounded text-caption font-bold">화상회의 특화</span>
+</div>
+</td>
+<td class="px-6 py-4 text-body-md text-on-surface-variant">2024.05.22 11:45</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5 text-on-surface-variant text-label-md">
+<span class="w-2 h-2 rounded-full bg-outline"></span> 승인 대기
+                                </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="bg-primary hover:bg-brand-hover text-on-primary px-4 py-1.5 rounded-lg text-label-md transition-all" onclick="window.location.href='{{DATA:SCREEN:SCREEN_4}}'">검토하기</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high overflow-hidden">
+<img alt="Space" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtIoeh0qkquO1rNFdgY7F87N3T_l4PrkeGBSeEsTwp9s4bajIw0ehX6MkAw62-5OYL_USTlKty1TX5LIFnbOJevbmfg6OJGpjur3WJM6UeVMDyz5vNrhNsNg1d15z9Moie9vMEJcMmBlsbPpVKF-KQmSESgqv2mu7upPcSI4pMtklw_WRuXtWqZ07_aFHczXGkVqfRWmCO4X_y3v5ir-uNc4w3_leS3R1g1LfuyZNzCIYTGJ6EWMBCqwFK4CO1Zmm40R7NCPXNaoV-">
+</div>
+<div>
+<p class="font-label-md">에테르 워크라운지</p>
+<p class="text-caption text-on-surface-variant">성동구 성수동</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex gap-1.5 flex-wrap">
+<span class="bg-primary-container text-on-primary-container px-2 py-0.5 rounded text-caption font-bold">식음료 제공</span>
+<span class="bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded text-caption font-bold">주차 가능</span>
+</div>
+</td>
+<td class="px-6 py-4 text-body-md text-on-surface-variant">2024.05.22 09:20</td>
+<td class="px-6 py-4">
+<span class="flex items-center gap-1.5 text-on-surface-variant text-label-md">
+<span class="w-2 h-2 rounded-full bg-outline"></span> 승인 대기
+                                </span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="bg-primary hover:bg-brand-hover text-on-primary px-4 py-1.5 rounded-lg text-label-md transition-all" onclick="window.location.href='{{DATA:SCREEN:SCREEN_4}}'">검토하기</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Footer: Pagination & Count -->
+<div class="px-6 py-4 bg-surface-container-low flex flex-col sm:flex-row items-center justify-between gap-4">
+<p class="text-caption text-on-surface-variant">총 24개의 대기 항목 중 1-4 표시</p>
+<div class="flex items-center gap-2">
+<button class="w-8 h-8 flex items-center justify-center rounded border border-border bg-surface-container-lowest hover:bg-surface-container-high text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-primary text-on-primary font-bold">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-border bg-surface-container-lowest hover:bg-surface-container-high text-on-surface-variant transition-colors">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-border bg-surface-container-lowest hover:bg-surface-container-high text-on-surface-variant transition-colors">3</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-border bg-surface-container-lowest hover:bg-surface-container-high text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Status Dashboard Metric Cards -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-stack-lg">
+<!-- Metric 1: Primary Colored -->
+<div class="bg-primary p-6 rounded-xl text-on-primary flex flex-col justify-between h-[160px] relative overflow-hidden">
+<div>
+<p class="text-label-md opacity-90">현재 대기중</p>
+<h3 class="text-[40px] font-bold leading-tight mt-2">24</h3>
+<p class="text-caption font-medium mt-1">전일 대비 <span class="text-tertiary-container">+5건</span></p>
+</div>
+<span class="material-symbols-outlined absolute top-6 right-6 text-[28px] opacity-80">assignment_late</span>
+</div>
+<!-- Metric 2 -->
+<div class="bg-surface-container-low border border-border p-6 rounded-xl flex flex-col justify-between h-[160px] relative overflow-hidden">
+<div>
+<p class="text-label-md text-on-surface-variant">오늘 승인됨</p>
+<h3 class="text-[40px] font-bold leading-tight mt-2">128</h3>
+<p class="text-caption text-on-surface-variant mt-1">평균 검토 시간 <span class="font-bold">45분</span></p>
+</div>
+<span class="material-symbols-outlined absolute top-6 right-6 text-[28px] text-primary opacity-60">check_circle</span>
+</div>
+<!-- Metric 3 -->
+<div class="bg-surface-container-low border border-border p-6 rounded-xl flex flex-col justify-between h-[160px] relative overflow-hidden">
+<div>
+<p class="text-label-md text-on-surface-variant">자동 분류 AI 정확도</p>
+<h3 class="text-[40px] font-bold leading-tight mt-2">98.2%</h3>
+<p class="text-caption text-on-surface-variant mt-1">지난 30일 데이터 기준</p>
+</div>
+<span class="material-symbols-outlined absolute top-6 right-6 text-[28px] text-secondary opacity-60">psychology</span>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low border-t border-border py-stack-xl mt-12">
+<div class="max-w-[1200px] mx-auto px-margin-x">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-stack-lg mb-12">
+<div class="md:col-span-2">
+<h4 class="font-headline-md text-headline-md mb-4">SpaceMate AI</h4>
+<p class="text-on-surface-variant text-body-md max-w-md leading-relaxed">
+                        SpaceMate AI는 인공지능 기술을 통해 최적의 업무 및 휴식 공간을 찾아드리는 지능형 공간 매칭 에이전트 서비스입니다.
+                    </p>
+<div class="flex gap-4 mt-6">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">share</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">alternate_email</button>
+</div>
+</div>
+<div>
+<h5 class="font-label-md mb-4 text-on-surface">서비스</h5>
+<ul class="space-y-2">
+<li class=""><a class="text-on-surface-variant hover:text-primary text-body-md" href="#">회사소개</a></li>
+<li class=""><a class="text-on-surface-variant hover:text-primary text-body-md" href="#">이용약관</a></li>
+</ul>
+</div>
+<div>
+<h5 class="font-label-md mb-4 text-on-surface">정책 및 협력</h5>
+<ul class="space-y-2">
+<li class=""><a class="text-on-surface-variant hover:text-primary text-body-md" href="#">개인정보처리방침</a></li>
+<li class=""><a class="text-on-surface-variant hover:text-primary text-body-md" href="#">고객센터</a></li>
+<li class=""><a class="text-on-surface-variant hover:text-primary text-body-md" href="#">제휴문의</a></li>
+</ul>
+</div>
+</div>
+<div class="pt-8 border-t border-outline-variant flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="text-caption text-on-surface-variant">© 2024 SpaceMate AI. All rights reserved.</p>
+</div>
+</div>
+</footer>
+
+
+</body></html>

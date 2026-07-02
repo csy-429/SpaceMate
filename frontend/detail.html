@@ -1,0 +1,420 @@
+<!DOCTYPE html><html lang="ko"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>SpaceMate - 공간 상세</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        body { font-family: 'Hanken Grotesk', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "accent-yellow": "#FFD014", "on-surface": "#1c1b1b", "surface-container-low": "#f6f3f2",
+                        "text-secondary": "#6B7280", "surface-bright": "#fcf9f8", "secondary": "#ab3500",
+                        "background": "#fcf9f8", "brand-hover": "#5B2ED1", "error": "#EF4444", "border": "#E5E2ED",
+                        "surface": "#F8F7FB", "on-primary": "#ffffff", "surface-container-lowest": "#ffffff",
+                        "primary-container": "#6d3af1", "on-surface-variant": "#494456", "primary": "#540cd9",
+                        "surface-container-high": "#eae7e7", "outline": "#7a7487", "outline-variant": "#cac3d8"
+                    },
+                    "spacing": { "stack-lg": "24px", "stack-xl": "48px", "margin-x": "24px", "stack-sm": "8px", "stack-md": "16px" },
+                    "fontFamily": { "headline-lg": ["Hanken Grotesk"], "headline-md": ["Hanken Grotesk"], "headline-sm": ["Hanken Grotesk"], "label-md": ["Hanken Grotesk"], "body-md": ["Hanken Grotesk"], "caption": ["Hanken Grotesk"] },
+                    "fontSize": {
+                        "headline-lg": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "headline-md": ["22px", {"lineHeight": "28px", "fontWeight": "700"}],
+                        "headline-sm": ["17px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "label-md": ["15px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "body-md": ["15px", {"lineHeight": "22px", "fontWeight": "400"}],
+                        "caption": ["13px", {"lineHeight": "18px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface">
+<header class="bg-surface-container-lowest border-b border-border shadow-sm sticky top-0 z-50">
+<div class="flex flex-col w-full max-w-[1200px] mx-auto px-margin-x h-16 justify-center">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-stack-lg">
+<span class="font-headline-lg text-headline-lg font-black text-primary">SpaceMate</span>
+<nav class="hidden md:flex gap-stack-md">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="index.html">공간찾기</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="recommend.html">추천</a>
+</nav>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-[1200px] mx-auto px-margin-x py-stack-lg">
+<section class="mb-stack-lg overflow-hidden">
+<div id="gallery" class="w-full aspect-[16/7] rounded-xl overflow-hidden bg-surface-container-low">
+</div>
+</section>
+<div id="space-content" class="flex flex-col lg:flex-row gap-stack-lg">
+<p class="text-on-surface-variant py-8">불러오는 중...</p>
+</div>
+</main>
+<footer class="bg-surface-container-low border-t border-border mt-stack-xl">
+<div class="max-w-[1200px] mx-auto px-margin-x py-stack-xl text-center text-caption text-on-surface-variant">
+© SpaceMate Inc. All rights reserved.
+</div>
+</footer>
+<script>
+        const API_BASE = "http://127.0.0.1:8000";
+        const params = new URLSearchParams(location.search);
+        const spaceId = params.get('id') || 'sp03';
+
+        let spaceData = null;
+        let selectedDate = new Date();
+        let calendarMonth = new Date();
+        let guestCount = 2;
+        let startHour = 18;
+        let hours = 3;
+        let activeMode = 'hourly'; // 'hourly' | 'package'
+
+        function fmtDate(d) {
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        }
+        function sameDate(a, b) {
+            return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+        }
+
+        async function loadDetail() {
+            try {
+                const res = await fetch(`${API_BASE}/spaces/${spaceId}`);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+                spaceData = data.space;
+                guestCount = Math.min(2, spaceData.capacity);
+                renderGallery();
+                await renderContent(data);
+            } catch (err) {
+                console.error(err);
+                document.getElementById('space-content').innerHTML =
+                    '<p class="text-error py-8">공간 정보를 불러오지 못했습니다. 백엔드 서버가 켜져 있는지 확인해주세요.</p>';
+            }
+        }
+
+        function renderGallery() {
+            document.getElementById('gallery').innerHTML =
+                `<img class="w-full h-full object-cover" src="${spaceData.image_url}">`;
+        }
+
+        function renderReviewSection(data) {
+            if (data.review_mode === 'grouped') {
+                const groups = data.review_groups;
+                const chips = groups.map((g, i) =>
+                    `<button class="review-chip px-4 py-2 rounded-full font-label-md transition-all ${i === 0 ? 'bg-primary text-on-primary shadow-sm' : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-variant'}" data-idx="${i}">${g.label}</button>`
+                ).join('');
+                return `
+                    <section class="mb-stack-xl">
+                        <div class="flex items-center gap-2 mb-stack-md">
+                            <span class="material-symbols-outlined text-primary">psychology</span>
+                            <h2 class="font-headline-sm text-headline-sm">AI 후기 요약</h2>
+                        </div>
+                        <div class="flex flex-wrap gap-2 mb-stack-md" id="review-chips">${chips}</div>
+                        <div class="bg-surface p-stack-md rounded-xl border border-border shadow-sm">
+                            <p class="font-body-md text-on-surface-variant leading-relaxed" id="review-summary-text">
+                                <span class="font-bold text-primary">AI 분석 결과:</span> ${groups[0].summary}
+                            </p>
+                        </div>
+                    </section>`;
+            }
+            // 폴백: 그룹 없음 -> 원문 후기 그대로 (US-01 AC-4)
+            const reviews = data.reviews || [];
+            const preview = reviews.slice(0, 5).map(r =>
+                `<div class="border-b border-border py-2 last:border-0">
+                    <div class="flex items-center gap-2 text-caption text-on-surface-variant mb-1">
+                        <span class="font-bold">${r.author}</span>
+                        <span class="material-symbols-outlined text-accent-yellow text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                        <span>${r.rating}</span>
+                        <span>${r.created_at}</span>
+                    </div>
+                    <p class="text-body-md text-on-surface">${r.content}</p>
+                </div>`
+            ).join('');
+            return `
+                <section class="mb-stack-xl">
+                    <div class="flex items-center gap-2 mb-stack-md">
+                        <span class="material-symbols-outlined text-on-surface-variant">psychology</span>
+                        <h2 class="font-headline-sm text-headline-sm">후기</h2>
+                        <span class="text-caption text-on-surface-variant px-2 py-0.5 bg-surface-container-high rounded">AI 요약 준비중 · 원문 표시</span>
+                    </div>
+                    <div class="bg-surface p-stack-md rounded-xl border border-border shadow-sm">
+                        ${preview || '<p class="text-on-surface-variant">아직 후기가 없습니다.</p>'}
+                        ${reviews.length > 5 ? `<p class="text-caption text-primary mt-2">외 ${reviews.length - 5}개 후기 더보기</p>` : ''}
+                    </div>
+                </section>`;
+        }
+
+        function renderFacilities() {
+            return spaceData.facilities.map(f =>
+                `<span class="px-2 py-1 bg-surface-container-low rounded text-[11px] text-on-surface-variant">${f}</span>`
+            ).join('');
+        }
+
+        function renderCalendar() {
+            const y = calendarMonth.getFullYear();
+            const m = calendarMonth.getMonth();
+            const first = new Date(y, m, 1);
+            const daysInMonth = new Date(y, m + 1, 0).getDate();
+            const startWeekday = first.getDay();
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            let cells = '';
+            for (let i = 0; i < startWeekday; i++) cells += '<div></div>';
+            for (let d = 1; d <= daysInMonth; d++) {
+                const cellDate = new Date(y, m, d);
+                const isPast = cellDate < today;
+                const isSelected = sameDate(cellDate, selectedDate);
+                const cls = isPast
+                    ? 'text-outline-variant'
+                    : isSelected
+                        ? 'bg-primary text-on-primary font-bold cursor-pointer'
+                        : 'hover:bg-primary-container hover:text-white cursor-pointer';
+                cells += `<div class="h-7 flex items-center justify-center text-caption rounded-full ${cls}" ${isPast ? '' : `data-day="${d}"`}>${d}</div>`;
+            }
+
+            return `
+                <div class="bg-surface-container-low p-2 rounded-lg" id="calendar">
+                    <div class="flex justify-between items-center mb-2 px-1">
+                        <span class="text-caption font-bold">${y}년 ${m + 1}월</span>
+                        <div class="flex gap-1">
+                            <span class="material-symbols-outlined text-[16px] cursor-pointer" id="cal-prev">chevron_left</span>
+                            <span class="material-symbols-outlined text-[16px] cursor-pointer" id="cal-next">chevron_right</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-7 gap-1 text-center mb-1">
+                        <span class="text-[10px] text-outline">일</span><span class="text-[10px] text-outline">월</span><span class="text-[10px] text-outline">화</span><span class="text-[10px] text-outline">수</span><span class="text-[10px] text-outline">목</span><span class="text-[10px] text-outline">금</span><span class="text-[10px] text-outline">토</span>
+                    </div>
+                    <div class="grid grid-cols-7 gap-1 text-center">${cells}</div>
+                </div>`;
+        }
+
+        function hourOptions(selected) {
+            let opts = '';
+            for (let h = 0; h < 24; h++) opts += `<option value="${h}" ${h === selected ? 'selected' : ''}>${String(h).padStart(2, '0')}:00</option>`;
+            return opts;
+        }
+        function hoursOptions(selected) {
+            let opts = '';
+            for (let h = 2; h <= 12; h++) opts += `<option value="${h}" ${h === selected ? 'selected' : ''}>${h}시간</option>`;
+            return opts;
+        }
+
+        async function renderContent(data) {
+            const rating = spaceData.avg_rating != null ? spaceData.avg_rating.toFixed(1) : '-';
+            const reviewSectionHtml = renderReviewSection(data);
+
+            let slots;
+            try {
+                const slotsRes = await fetch(`${API_BASE}/reservations/${spaceId}/slots?date=${fmtDate(selectedDate)}`);
+                slots = await slotsRes.json();
+            } catch (e) {
+                slots = null;
+            }
+            const hourlyPrice = slots ? slots.hourly_slots[0].price : spaceData.price_per_hour_weekday;
+
+            const packageBlock = spaceData.price_package != null ? `
+                <div>
+                    <button class="w-full flex items-center justify-between p-stack-md hover:bg-surface transition-colors text-left" id="toggle-package">
+                        <div>
+                            <h3 class="font-headline-sm text-headline-sm text-on-surface">올나잇 패키지</h3>
+                            <p class="font-label-md text-primary">₩${spaceData.price_package.toLocaleString()} / 패키지</p>
+                        </div>
+                        <span class="material-symbols-outlined text-outline-variant" id="package-icon">expand_more</span>
+                    </button>
+                    <div class="p-stack-md pt-0 space-y-stack-md hidden" id="package-content">
+                        <p class="text-caption text-on-surface-variant">${spaceData.package_hours || ''} 이용 가능한 패키지입니다.</p>
+                    </div>
+                </div>` : '';
+
+            document.getElementById('space-content').innerHTML = `
+                <div class="flex-1 lg:w-2/3">
+                    <div class="mb-stack-lg">
+                        <h1 class="font-headline-lg text-headline-lg mb-2">${spaceData.name}</h1>
+                        <div class="flex items-center gap-2 text-on-surface-variant font-body-md flex-wrap">
+                            <span class="material-symbols-outlined text-[18px]">location_on</span>
+                            <span>${spaceData.region}</span>
+                            <span class="mx-2 text-outline-variant">|</span>
+                            <span class="material-symbols-outlined text-[18px] text-accent-yellow" style="font-variation-settings: 'FILL' 1;">star</span>
+                            <span class="font-bold text-on-surface">${rating}</span>
+                            <span class="text-caption text-label-md">(리뷰 ${spaceData.review_count}개)</span>
+                        </div>
+                        <div class="flex flex-wrap gap-2 mt-3">${renderFacilities()}</div>
+                    </div>
+                    ${reviewSectionHtml}
+                </div>
+                <div class="lg:w-1/3">
+                    <div class="lg:sticky lg:top-24 space-y-4">
+                        <div class="bg-surface-container-lowest border border-border rounded-xl shadow-lg overflow-hidden">
+                            <div class="border-b border-border">
+                                <button class="w-full flex items-center justify-between p-stack-md hover:bg-surface transition-colors text-left" id="toggle-hourly">
+                                    <div>
+                                        <h3 class="font-headline-sm text-headline-sm text-on-surface">시간 단위 예약하기</h3>
+                                        <p class="font-label-md text-primary" id="hourly-price">₩${hourlyPrice.toLocaleString()} / 시간</p>
+                                    </div>
+                                    <span class="material-symbols-outlined text-outline-variant rotate-180" id="hourly-icon">expand_more</span>
+                                </button>
+                                <div class="p-stack-md pt-0 space-y-stack-md block" id="hourly-content">
+                                    <div id="calendar-wrap">${renderCalendar()}</div>
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div>
+                                            <label class="text-caption text-on-surface-variant">시작 시각</label>
+                                            <select class="w-full border border-border rounded-lg p-2 text-body-md" id="start-hour-select">${hourOptions(startHour)}</select>
+                                        </div>
+                                        <div>
+                                            <label class="text-caption text-on-surface-variant">이용 시간</label>
+                                            <select class="w-full border border-border rounded-lg p-2 text-body-md" id="hours-select">${hoursOptions(hours)}</select>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="text-caption font-bold text-on-surface-variant">인원 선택 (최대 ${spaceData.capacity}명)</label>
+                                        <div class="flex items-center justify-between bg-surface-container-low p-2 rounded-lg">
+                                            <button class="w-8 h-8 rounded-full border border-outline-variant flex items-center justify-center hover:bg-white" id="guest-minus">-</button>
+                                            <span class="font-label-md" id="guest-count-label">${guestCount} 명</span>
+                                            <button class="w-8 h-8 rounded-full border border-outline-variant flex items-center justify-center hover:bg-white" id="guest-plus">+</button>
+                                        </div>
+                                        ${spaceData.base_capacity ? `<p class="text-[11px] text-on-surface-variant">기준 ${spaceData.base_capacity}명 초과 시 1인당 ${spaceData.extra_person_fee.toLocaleString()}원 추가</p>` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                            ${packageBlock}
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="flex-1 bg-primary text-on-primary font-headline-sm text-headline-sm py-4 rounded-xl shadow-lg hover:bg-primary-container transition-all active:scale-95" id="reserve-btn">
+                                바로예약하기
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
+
+            attachHandlers(data);
+        }
+
+        function attachHandlers(data) {
+            // 아코디언
+            const hourlyContent = document.getElementById('hourly-content');
+            const hourlyIcon = document.getElementById('hourly-icon');
+            const packageContent = document.getElementById('package-content');
+            const packageIcon = document.getElementById('package-icon');
+            document.getElementById('toggle-hourly').addEventListener('click', () => {
+                activeMode = 'hourly';
+                hourlyContent.classList.remove('hidden');
+                hourlyIcon.classList.add('rotate-180');
+                if (packageContent) { packageContent.classList.add('hidden'); packageIcon.classList.remove('rotate-180'); }
+            });
+            const togglePkg = document.getElementById('toggle-package');
+            if (togglePkg) {
+                togglePkg.addEventListener('click', () => {
+                    activeMode = 'package';
+                    packageContent.classList.remove('hidden');
+                    packageIcon.classList.add('rotate-180');
+                    hourlyContent.classList.add('hidden');
+                    hourlyIcon.classList.remove('rotate-180');
+                });
+            }
+
+            // 리뷰 그룹 칩
+            document.querySelectorAll('.review-chip').forEach(chip => {
+                chip.addEventListener('click', () => {
+                    document.querySelectorAll('.review-chip').forEach(c => {
+                        c.classList.remove('bg-primary', 'text-on-primary', 'shadow-sm');
+                        c.classList.add('bg-surface-container-high', 'text-on-surface-variant');
+                    });
+                    chip.classList.add('bg-primary', 'text-on-primary', 'shadow-sm');
+                    chip.classList.remove('bg-surface-container-high', 'text-on-surface-variant');
+                    const idx = Number(chip.dataset.idx);
+                    document.getElementById('review-summary-text').innerHTML =
+                        `<span class="font-bold text-primary">AI 분석 결과:</span> ${data.review_groups[idx].summary}`;
+                });
+            });
+
+            // 인원 +/-
+            document.getElementById('guest-minus').addEventListener('click', () => {
+                guestCount = Math.max(1, guestCount - 1);
+                document.getElementById('guest-count-label').textContent = `${guestCount} 명`;
+            });
+            document.getElementById('guest-plus').addEventListener('click', () => {
+                guestCount = Math.min(spaceData.capacity, guestCount + 1);
+                document.getElementById('guest-count-label').textContent = `${guestCount} 명`;
+            });
+
+            // 시작시각/시간수
+            document.getElementById('start-hour-select').addEventListener('change', e => startHour = Number(e.target.value));
+            document.getElementById('hours-select').addEventListener('change', e => hours = Number(e.target.value));
+
+            // 캘린더 (재렌더링 방식)
+            bindCalendarEvents();
+
+            // 예약하기
+            document.getElementById('reserve-btn').addEventListener('click', handleReserve);
+        }
+
+        function bindCalendarEvents() {
+            document.getElementById('cal-prev').addEventListener('click', () => {
+                calendarMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() - 1, 1);
+                document.getElementById('calendar-wrap').innerHTML = renderCalendar();
+                bindCalendarEvents();
+            });
+            document.getElementById('cal-next').addEventListener('click', () => {
+                calendarMonth = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth() + 1, 1);
+                document.getElementById('calendar-wrap').innerHTML = renderCalendar();
+                bindCalendarEvents();
+            });
+            document.querySelectorAll('#calendar [data-day]').forEach(cell => {
+                cell.addEventListener('click', async () => {
+                    selectedDate = new Date(calendarMonth.getFullYear(), calendarMonth.getMonth(), Number(cell.dataset.day));
+                    document.getElementById('calendar-wrap').innerHTML = renderCalendar();
+                    bindCalendarEvents();
+                    try {
+                        const res = await fetch(`${API_BASE}/reservations/${spaceId}/slots?date=${fmtDate(selectedDate)}`);
+                        const slots = await res.json();
+                        document.getElementById('hourly-price').textContent = `₩${slots.hourly_slots[0].price.toLocaleString()} / 시간`;
+                    } catch (e) { /* 무시 - 가격 표시만 갱신 실패 */ }
+                });
+            });
+        }
+
+        async function handleReserve() {
+            const btn = document.getElementById('reserve-btn');
+            btn.disabled = true;
+            btn.textContent = '예약 처리중...';
+            const body = activeMode === 'package'
+                ? { space_id: spaceId, date: fmtDate(selectedDate), reservation_type: 'package', guest_count: guestCount }
+                : { space_id: spaceId, date: fmtDate(selectedDate), reservation_type: 'hourly', start_hour: startHour, hours: hours, guest_count: guestCount };
+            try {
+                const res = await fetch(`${API_BASE}/reservations`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json; charset=utf-8' },
+                    body: JSON.stringify(body),
+                });
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    alert(`예약 실패: ${err.detail || res.status}`);
+                    btn.disabled = false;
+                    btn.textContent = '바로예약하기';
+                    return;
+                }
+                const reservation = await res.json();
+                location.href = `recommend.html?reservation_id=${reservation.reservation_id}&space_type=${encodeURIComponent(spaceData.type)}&guest_count=${guestCount}`;
+            } catch (err) {
+                console.error(err);
+                alert('예약 중 오류가 발생했습니다. 백엔드 서버 연결을 확인해주세요.');
+                btn.disabled = false;
+                btn.textContent = '바로예약하기';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadDetail);
+    </script>
+</body></html>

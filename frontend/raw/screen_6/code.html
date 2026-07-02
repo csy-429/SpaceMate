@@ -1,0 +1,273 @@
+<!DOCTYPE html><html lang="ko"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>SpaceMate - 결제 완료</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed-variant": "#005321",
+                    "accent-yellow": "#FFD014",
+                    "surface-dim": "#dcd9d9",
+                    "tertiary": "#005925",
+                    "tertiary-fixed-dim": "#4ae176",
+                    "primary-fixed-dim": "#cdbdff",
+                    "on-surface": "#1c1b1b",
+                    "surface-container-low": "#f6f3f2",
+                    "inverse-surface": "#313030",
+                    "surface-tint": "#6832eb",
+                    "secondary-fixed": "#ffdbd0",
+                    "on-secondary-fixed-variant": "#832600",
+                    "on-tertiary-container": "#6afe8e",
+                    "on-error": "#ffffff",
+                    "on-secondary-container": "#5d1900",
+                    "on-secondary-fixed": "#390c00",
+                    "outline": "#7a7487",
+                    "inverse-primary": "#cdbdff",
+                    "text-secondary": "#6B7280",
+                    "surface-bright": "#fcf9f8",
+                    "secondary": "#ab3500",
+                    "background": "#fcf9f8",
+                    "brand-hover": "#5B2ED1",
+                    "error": "#EF4444",
+                    "border": "#E5E2ED",
+                    "surface": "#F8F7FB",
+                    "on-primary-fixed-variant": "#4f00d0",
+                    "on-primary": "#ffffff",
+                    "secondary-fixed-dim": "#ffb59d",
+                    "on-primary-container": "#e6dcff",
+                    "on-error-container": "#93000a",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-container": "#6d3af1",
+                    "surface-container-highest": "#e5e2e1",
+                    "on-primary-fixed": "#20005f",
+                    "primary-fixed": "#e7deff",
+                    "on-secondary": "#ffffff",
+                    "on-surface-variant": "#494456",
+                    "on-tertiary-fixed": "#002109",
+                    "primary": "#540cd9",
+                    "surface-container-high": "#eae7e7",
+                    "on-tertiary": "#ffffff",
+                    "secondary-container": "#fe6a34",
+                    "on-background": "#1c1b1b",
+                    "outline-variant": "#cac3d8",
+                    "tertiary-fixed": "#6bff8f",
+                    "surface-container": "#f0eded",
+                    "inverse-on-surface": "#f3f0ef",
+                    "surface-variant": "#e5e2e1",
+                    "error-container": "#ffdad6",
+                    "tertiary-container": "#007432"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-lg": "24px",
+                    "stack-xl": "48px",
+                    "unit": "4px",
+                    "stack-xs": "4px",
+                    "margin-x": "24px",
+                    "stack-sm": "8px",
+                    "container-max": "1200px",
+                    "gutter": "16px",
+                    "stack-md": "16px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": ["Hanken Grotesk"],
+                    "label-md": ["Hanken Grotesk"],
+                    "caption": ["Hanken Grotesk"],
+                    "headline-md": ["Hanken Grotesk"],
+                    "headline-sm": ["Hanken Grotesk"],
+                    "body-md": ["Hanken Grotesk"],
+                    "headline-lg": ["Hanken Grotesk"]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "label-md": ["15px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "caption": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-sm": ["17px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "body-md": ["15px", {"lineHeight": "22px", "fontWeight": "400"}],
+                    "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Hanken Grotesk', sans-serif; }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .success-animation {
+            animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+        }
+        @keyframes scaleIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-surface-container-lowest dark:bg-on-surface border-b border-border dark:border-outline-variant shadow-sm dark:shadow-none docked full-width top-0 z-50 sticky">
+<div class="flex flex-col w-full max-w-[1200px] mx-auto px-margin-x h-16 justify-center">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-stack-lg">
+<a class="font-headline-lg text-headline-lg font-black text-primary dark:text-primary-fixed-dim tracking-tight" href="/">SpaceMate</a>
+<nav class="hidden md:flex items-center gap-gutter">
+<a class="font-label-md text-label-md text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors" href="#">공간찾기</a>
+<a class="font-label-md text-label-md text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors" href="#">추천</a>
+</nav>
+</div>
+<div class="flex items-center gap-stack-md">
+<div class="hidden md:flex items-center bg-surface-container-low px-stack-md py-stack-xs rounded-full border border-border">
+<span class="material-symbols-outlined text-outline text-[20px] mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md w-48" placeholder="공간을 검색해보세요" type="text">
+</div>
+<button class="material-symbols-outlined p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-all">person</button>
+<button class="material-symbols-outlined p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-all">login</button>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow flex flex-col items-center justify-center px-margin-x py-stack-xl relative overflow-hidden">
+<!-- Abstract Background Decoration -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] opacity-10 pointer-events-none">
+
+</div>
+<div class="max-w-[600px] w-full z-10 flex flex-col items-center">
+<!-- Success Icon & Message -->
+<div class="success-animation flex flex-col items-center mb-stack-xl">
+<div class="w-24 h-24 bg-tertiary-container rounded-full flex items-center justify-center mb-stack-md shadow-lg shadow-tertiary/20">
+<span class="material-symbols-outlined text-on-tertiary-container text-[48px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface text-center mb-stack-xs">예약이 완료되었습니다</h1>
+<p class="font-body-md text-body-md text-on-surface-variant text-center">결제가 성공적으로 처리되었습니다. 즐거운 시간 되세요!</p>
+</div>
+<!-- Summary Card -->
+<div class="w-full bg-surface-container-lowest border border-border rounded-xl shadow-sm p-stack-lg mb-stack-xl flex flex-col gap-stack-md">
+<div class="flex gap-stack-md items-start">
+<div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A luxurious modern meeting space with large floor-to-ceiling windows, premium ergonomic chairs, and a sleek wooden conference table. The room is filled with soft natural sunlight, highlighting the minimalist and tech-forward interior design. High-quality photography style with a focus on professional aesthetics and corporate elegance." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgiM7djpmVq0gN-78skEYHqjhAMBFHkzBCKv1AZIVzHmHwJSguVvx3lnUsdvazErDBpJvWHJQK6RwpMDsqz3PMQ1ws8VLUprh4WRYatOHdI1lFtSPX_TpoPxaHxDpvKmiK9vvgErjywFwm9UccYMO66Y4Q7wn8SFilq16mNQg0IoOrPEUJ4U4FVcqX192g9EKzoJY4qo7VGMRInjakLuSPsB-BnPsI87dyMy4c8jTipNi1u3KcdNn--lQgROViVqGiU7-da-8PY2QI">
+</div>
+<div class="flex-grow">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">테크허브 프리미엄 미팅룸 A</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">강남구 테헤란로 123</p>
+</div>
+</div>
+<div class="h-[1px] bg-border w-full"></div>
+<div class="grid grid-cols-2 gap-stack-md">
+<div class="flex flex-col">
+<span class="font-caption text-caption text-outline">예약 날짜</span>
+<span class="font-label-md text-label-md text-on-surface">2023년 12월 24일 (일)</span>
+</div>
+<div class="flex flex-col">
+<span class="font-caption text-caption text-outline">이용 시간</span>
+<span class="font-label-md text-label-md text-on-surface">14:00 - 17:00 (3시간)</span>
+</div>
+<div class="flex flex-col">
+<span class="font-caption text-caption text-outline">인원</span>
+<span class="font-label-md text-label-md text-on-surface">최대 8인</span>
+</div>
+<div class="flex flex-col">
+<span class="font-caption text-caption text-outline">결제 수단</span>
+<span class="font-label-md text-label-md text-on-surface">SpaceMate Pay (신한카드)</span>
+</div>
+</div>
+<div class="h-[1px] bg-border w-full"></div>
+<div class="flex justify-between items-center py-stack-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface">최종 결제 금액</span>
+<span class="font-headline-lg text-headline-lg text-primary">45,000원</span>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-col sm:flex-row gap-stack-md w-full">
+<a class="flex-1 h-12 flex items-center justify-center font-label-md text-label-md bg-surface-container-high text-on-surface-variant rounded-lg hover:bg-surface-container-highest transition-all active:scale-95" href="#">
+                    홈으로
+                </a>
+<a class="flex-1 h-12 flex items-center justify-center font-label-md text-label-md bg-primary text-on-primary rounded-lg hover:bg-brand-hover transition-all active:scale-95 shadow-md shadow-primary/20" href="#">
+                    예약내역 보기
+                </a>
+</div>
+<!-- Info Message -->
+<p class="mt-stack-lg font-caption text-caption text-outline text-center">
+                예약 내역은 '마이페이지 &gt; 예약내역'에서 언제든지 확인하실 수 있습니다.<br>
+                문의사항이 있으시면 고객센터(1588-0000)로 연락주세요.
+            </p>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low dark:bg-inverse-surface border-t border-border dark:border-outline-variant full-width bottom-0">
+<div class="grid grid-cols-2 md:grid-cols-5 gap-stack-lg max-w-[1200px] mx-auto px-margin-x py-stack-xl">
+<div class="col-span-2 md:col-span-1">
+<span class="font-headline-md text-headline-md font-bold text-on-surface dark:text-inverse-on-surface">SpaceMate</span>
+<p class="mt-stack-md font-caption text-caption text-on-surface-variant dark:text-surface-variant">© SpaceMate Inc. All rights reserved.</p>
+</div>
+<div class="flex flex-col gap-stack-sm">
+<span class="font-headline-sm text-headline-sm text-on-surface mb-2">회사소개</span>
+<a class="font-caption text-caption text-on-surface-variant dark:text-surface-variant hover:underline hover:text-primary transition-all" href="#">브랜드 스토리</a>
+<a class="font-caption text-caption text-on-surface-variant dark:text-surface-variant hover:underline hover:text-primary transition-all" href="#">채용 안내</a>
+</div>
+<div class="flex flex-col gap-stack-sm">
+<span class="font-headline-sm text-headline-sm text-on-surface mb-2">이용안내</span>
+<a class="font-caption text-caption text-on-surface-variant dark:text-surface-variant hover:underline hover:text-primary transition-all" href="#">예약 가이드</a>
+<a class="font-caption text-caption text-on-surface-variant dark:text-surface-variant hover:underline hover:text-primary transition-all" href="#">취소 및 환불 정책</a>
+</div>
+<div class="flex flex-col gap-stack-sm">
+<span class="font-headline-sm text-headline-sm text-on-surface mb-2">제휴문의</span>
+<a class="font-caption text-caption text-on-surface-variant dark:text-surface-variant hover:underline hover:text-primary transition-all" href="#">공간 등록</a>
+<a class="font-caption text-caption text-on-surface-variant dark:text-surface-variant hover:underline hover:text-primary transition-all" href="#">비즈니스 협력</a>
+</div>
+<div class="flex flex-col gap-stack-sm">
+<span class="font-headline-sm text-headline-sm text-on-surface mb-2">고객지원</span>
+<a class="font-caption text-caption text-on-surface-variant dark:text-surface-variant hover:underline hover:text-primary transition-all" href="#">자주 묻는 질문</a>
+<a class="font-caption text-caption text-on-surface-variant dark:text-surface-variant hover:underline hover:text-primary transition-all" href="#">1:1 문의</a>
+</div>
+</div>
+</footer>
+<script>
+        // Micro-interaction for buttons
+        document.querySelectorAll('button, a').forEach(el => {
+            el.addEventListener('mousedown', () => {
+                el.style.transform = 'scale(0.96)';
+            });
+            el.addEventListener('mouseup', () => {
+                el.style.transform = 'scale(1)';
+            });
+            el.addEventListener('mouseleave', () => {
+                el.style.transform = 'scale(1)';
+            });
+        });
+
+        // Simple animation entrance for summary items
+        window.addEventListener('load', () => {
+            const summaryItems = document.querySelectorAll('.grid-cols-2 > div');
+            summaryItems.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(10px)';
+                setTimeout(() => {
+                    item.style.transition = 'all 0.4s ease';
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                }, 300 + (index * 50));
+            });
+        });
+    </script>
+</body></html>

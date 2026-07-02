@@ -1,0 +1,333 @@
+<!DOCTYPE html><html lang="ko"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed-variant": "#005321",
+                    "accent-yellow": "#FFD014",
+                    "surface-dim": "#dcd9d9",
+                    "tertiary": "#005925",
+                    "tertiary-fixed-dim": "#4ae176",
+                    "primary-fixed-dim": "#cdbdff",
+                    "on-surface": "#1c1b1b",
+                    "surface-container-low": "#f6f3f2",
+                    "inverse-surface": "#313030",
+                    "surface-tint": "#6832eb",
+                    "secondary-fixed": "#ffdbd0",
+                    "on-secondary-fixed-variant": "#832600",
+                    "on-tertiary-container": "#6afe8e",
+                    "on-error": "#ffffff",
+                    "on-secondary-container": "#5d1900",
+                    "on-secondary-fixed": "#390c00",
+                    "outline": "#7a7487",
+                    "inverse-primary": "#cdbdff",
+                    "text-secondary": "#6B7280",
+                    "surface-bright": "#fcf9f8",
+                    "secondary": "#ab3500",
+                    "background": "#fcf9f8",
+                    "brand-hover": "#5B2ED1",
+                    "error": "#EF4444",
+                    "border": "#E5E2ED",
+                    "surface": "#F8F7FB",
+                    "on-primary-fixed-variant": "#4f00d0",
+                    "on-primary": "#ffffff",
+                    "secondary-fixed-dim": "#ffb59d",
+                    "on-primary-container": "#e6dcff",
+                    "on-error-container": "#93000a",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-container": "#6d3af1",
+                    "surface-container-highest": "#e5e2e1",
+                    "on-primary-fixed": "#20005f",
+                    "primary-fixed": "#e7deff",
+                    "on-secondary": "#ffffff",
+                    "on-surface-variant": "#494456",
+                    "on-tertiary-fixed": "#002109",
+                    "primary": "#540cd9",
+                    "surface-container-high": "#eae7e7",
+                    "on-tertiary": "#ffffff",
+                    "secondary-container": "#fe6a34",
+                    "on-background": "#1c1b1b",
+                    "outline-variant": "#cac3d8",
+                    "tertiary-fixed": "#6bff8f",
+                    "surface-container": "#f0eded",
+                    "inverse-on-surface": "#f3f0ef",
+                    "surface-variant": "#e5e2e1",
+                    "error-container": "#ffdad6",
+                    "tertiary-container": "#007432"
+            },
+            "borderRadius": {
+                    "DEFAULT": "4px",
+                    "lg": "8px",
+                    "xl": "12px",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-lg": "24px",
+                    "stack-xl": "48px",
+                    "unit": "4px",
+                    "stack-xs": "4px",
+                    "margin-x": "24px",
+                    "stack-sm": "8px",
+                    "container-max": "1200px",
+                    "gutter": "16px",
+                    "stack-md": "16px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": ["Hanken Grotesk"],
+                    "label-md": ["Hanken Grotesk"],
+                    "caption": ["Hanken Grotesk"],
+                    "headline-md": ["Hanken Grotesk"],
+                    "headline-sm": ["Hanken Grotesk"],
+                    "body-md": ["Hanken Grotesk"],
+                    "headline-lg": ["Hanken Grotesk"]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "label-md": ["15px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "caption": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-sm": ["17px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "body-md": ["15px", {"lineHeight": "22px", "fontWeight": "400"}],
+                    "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Hanken Grotesk', sans-serif; background-color: #fcf9f8; }
+        .glass-effect { backdrop-filter: blur(10px); background: rgba(255, 255, 255, 0.95); }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .card-shadow { box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+<!-- TopAppBar -->
+<header class="bg-surface-container-lowest dark:bg-on-surface border-b border-border dark:border-outline-variant shadow-sm dark:shadow-none docked full-width top-0 z-50 sticky">
+<div class="flex flex-col w-full max-w-[1200px] mx-auto px-margin-x h-20">
+<div class="flex items-center justify-between h-full">
+<div class="flex items-center gap-stack-lg">
+<span class="font-headline-lg text-headline-lg font-black text-primary dark:text-primary-fixed-dim">SpaceMate</span>
+<nav class="hidden md:flex gap-stack-md ml-stack-xl">
+<a class="font-label-md text-label-md text-primary dark:text-primary-fixed-dim border-b-2 border-primary dark:border-primary-fixed-dim pb-1 font-bold" href="#">공간찾기</a>
+<a class="font-label-md text-label-md text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed-dim transition-colors" href="#">추천</a>
+</nav>
+</div>
+<div class="flex items-center gap-stack-md">
+<div class="hidden md:flex items-center bg-surface-container-low px-stack-md py-stack-xs rounded-full border border-border">
+<span class="material-symbols-outlined text-outline text-[20px]">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-body-md font-body-md w-48" placeholder="어떤 공간을 찾으시나요?" type="text">
+</div>
+<div class="flex items-center gap-stack-sm">
+<button class="p-stack-sm rounded-full hover:bg-surface transition-all active:scale-95">
+<span class="material-symbols-outlined text-on-surface-variant">person</span>
+</button>
+<button class="p-stack-sm rounded-full hover:bg-surface transition-all active:scale-95">
+<span class="material-symbols-outlined text-on-surface-variant">login</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="max-w-[1200px] mx-auto px-margin-x py-stack-xl min-h-[716px]">
+<div class="mb-stack-lg">
+<h1 class="font-headline-lg text-headline-lg">장바구니</h1>
+</div>
+<div class="flex flex-col lg:flex-row gap-stack-lg items-start">
+<!-- Left: Item List -->
+<div class="flex-1 w-full space-y-stack-md">
+<!-- Section: Space Reservation -->
+<div class="bg-surface-container-lowest rounded-xl card-shadow overflow-hidden border border-border">
+<div class="p-stack-md border-b border-border bg-surface-container-low flex justify-between items-center">
+<h2 class="font-headline-sm text-headline-sm">공간 예약</h2>
+<button class="text-error flex items-center gap-1 font-label-md">
+<span class="material-symbols-outlined text-[18px]">delete</span> 삭제
+                        </button>
+</div>
+<div class="p-stack-md flex flex-col md:flex-row gap-stack-md">
+<div class="w-full md:w-32 h-32 rounded-lg bg-surface flex-shrink-0" data-alt="A professional, brightly lit modern coworking space with high ceilings and large windows. The interior features sleek wooden desks, ergonomic chairs, and lush green indoor plants, captured in a clean light-mode aesthetic with vibrant orange accents for a high-end feel." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD4x9JBMNWIya0W15SdHofmctzGu3o3UOzi9mfLLCFsDzsUheGmlK5ukl5bvxWnURpHYgWJht2g8YRCzI8upNxuH7sxCuLojsFei3WOY2utErvS3U3QZVXIxY7FqpXPzMp09RI6ySy3BKrRRCLwBnhRKp5wB-FPnxjP-A8m5fa6GNlQFL-vf4ppIv9f4DOPPraTaP7KzMi16ozYUP7O4d_xh47zZIZhaHyUhREuGWZGIsExBp_p4Bgf3aOQzs36La0TkJ3tLqq2SiVU')"></div>
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<h3 class="font-headline-sm text-headline-sm mb-stack-xs">크리에이티브 스튜디오 테라스룸</h3>
+<p class="text-on-surface-variant font-body-md text-body-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">calendar_today</span>
+                                    2023년 11월 24일 (금) | 14:00 - 18:00 (4시간)
+                                </p>
+<p class="text-on-surface-variant font-body-md text-body-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+                                    서울 강남구 테헤란로 427
+                                </p>
+</div>
+<div class="mt-stack-md flex justify-end">
+<span class="font-headline-md text-headline-md text-primary">₩ 120,000</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Section: Product Add-ons -->
+<div class="bg-surface-container-lowest rounded-xl card-shadow overflow-hidden border border-border">
+<div class="p-stack-md border-b border-border bg-surface-container-low">
+<h2 class="font-headline-sm text-headline-sm">추가 상품</h2>
+</div>
+<!-- Product Item 1 -->
+<div class="p-stack-md flex flex-col md:flex-row gap-stack-md border-b border-border last:border-b-0">
+<div class="w-full md:w-24 h-24 rounded-lg bg-surface flex-shrink-0" data-alt="A high-end professional 4K projector and high-quality projection screen setup in a modern meeting room. The equipment looks sleek and metallic, with subtle glowing indicators, reflecting a premium tech-forward brand identity for a high-clarity office environment." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBS_Qh3a65zeS9Yz0l9tH_ah1zMrYZIIpPzypj2yjFedSWpcGLxFcHhFrFGHs4VJRZqnEnauQjQOyxnd0KSlRq21mzq4Rvkv-1nmRY6jDJ2PyV1XsT3ZqY38PiuS8IVk1NWm1_o5ZBOVbjLSo8AmXbw_3xzzyxcxBIHTz9VHQCZVtR6evhKPwsvagS1su5OsNxeePzWmm7jxDXV0fJ6-HuSjhP9F-k4aUPnbjU68XdGyzc-NCsa2UP5Ujk4NWt1TXMY1Up2cTBzBxzH')"></div>
+<div class="flex-1 flex flex-col md:flex-row justify-between items-start md:items-center">
+<div class="mb-stack-sm md:mb-0">
+<h3 class="font-label-md text-label-md">프리미엄 4K 빔프로젝터 대여</h3>
+<p class="text-on-surface-variant text-caption font-caption">정밀한 프레젠테이션을 위한 장비</p>
+</div>
+<div class="flex items-center gap-stack-lg w-full md:w-auto justify-between md:justify-end">
+<div class="flex items-center border border-outline-variant rounded-lg overflow-hidden">
+<button class="px-stack-sm py-1 hover:bg-surface-variant transition-colors"><span class="material-symbols-outlined text-[18px]">remove</span></button>
+<span class="px-stack-md font-label-md">1</span>
+<button class="px-stack-sm py-1 hover:bg-surface-variant transition-colors"><span class="material-symbols-outlined text-[18px]">add</span></button>
+</div>
+<div class="flex items-center gap-stack-md">
+<span class="font-headline-sm text-headline-sm text-on-surface">₩ 15,000</span>
+<button class="text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined">close</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Product Item 2 -->
+<div class="p-stack-md flex flex-col md:flex-row gap-stack-md border-b border-border last:border-b-0">
+<div class="w-full md:w-24 h-24 rounded-lg bg-surface flex-shrink-0" data-alt="A minimalist and aesthetic catering package for a business meeting, featuring artisanal coffee carafes, bottled water, and small gourmet pastries on a white ceramic tray. The style is clean, corporate, and modern, illuminated with soft ambient light." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDWQy3WT30jjs1x5ryfAxLVnmoSX4VT0dVbCXUH0x6mWS7wXMo60R9UIXN_v2owVqm1tPr4SxkmWIwuGZFksOsjPxaHS3fKzkbq1yyBf9YMTdEqoFHjONNSLJNrGyi_5yOUpb-dkCjQD0u7jqwVbK1_BHsdy9DGhq2S4QfXrkhS9Mj4ZFC0REHbp6Lkx29yTQpWryOx-UXpNkzUBVrTN9Z_oNrYJZ0MKvPj0mFmf7Lzwr93owDJicDfPiApn58IyIimgA6Czyiizf-Q')"></div>
+<div class="flex-1 flex flex-col md:flex-row justify-between items-start md:items-center">
+<div class="mb-stack-sm md:mb-0">
+<h3 class="font-label-md text-label-md">회의용 다과 세트 (8인용)</h3>
+<p class="text-on-surface-variant text-caption font-caption">프리미엄 원두 커피 및 핑거푸드</p>
+</div>
+<div class="flex items-center gap-stack-lg w-full md:w-auto justify-between md:justify-end">
+<div class="flex items-center border border-outline-variant rounded-lg overflow-hidden">
+<button class="px-stack-sm py-1 hover:bg-surface-variant transition-colors"><span class="material-symbols-outlined text-[18px]">remove</span></button>
+<span class="px-stack-md font-label-md">1</span>
+<button class="px-stack-sm py-1 hover:bg-surface-variant transition-colors"><span class="material-symbols-outlined text-[18px]">add</span></button>
+</div>
+<div class="flex items-center gap-stack-md">
+<span class="font-headline-sm text-headline-sm text-on-surface">₩ 48,000</span>
+<button class="text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined">close</span></button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Empty State Logic could go here -->
+</div>
+<!-- Right: Payment Summary Sticky -->
+<aside class="w-full lg:w-[380px] lg:sticky lg:top-[104px]">
+<div class="bg-surface-container-lowest rounded-xl card-shadow border border-border overflow-hidden">
+<div class="p-stack-md border-b border-border">
+<h2 class="font-headline-sm text-headline-sm">결제 내역</h2>
+</div>
+<div class="p-stack-md space-y-stack-md">
+<div class="flex justify-between text-body-md font-body-md text-on-surface-variant">
+<span class="">공간 대여료</span>
+<span class="text-on-surface">₩ 120,000</span>
+</div>
+<div class="flex justify-between text-body-md font-body-md text-on-surface-variant">
+<span class="">추가 상품 합계</span>
+<span class="text-on-surface">₩ 63,000</span>
+</div>
+<div class="flex justify-between text-body-md font-body-md text-on-surface-variant">
+<span class="">할인 금액</span>
+<span class="text-secondary font-semibold">- ₩ 0</span>
+</div>
+<div class="pt-stack-md border-t border-border flex justify-between items-center">
+<span class="font-headline-sm text-headline-sm">총 결제 금액</span>
+<span class="font-headline-lg text-[24px] text-primary">₩ 183,000</span>
+</div>
+<div class="pt-stack-md">
+<p class="text-caption font-caption text-on-surface-variant mb-stack-md">
+                                예약 확정 시 이용 약관 및 취소 규정에 동의하는 것으로 간주됩니다.
+                            </p>
+<button class="w-full h-[48px] bg-primary text-on-primary rounded-lg font-label-md text-label-md flex items-center justify-center gap-2 hover:bg-brand-hover transition-all active:scale-[0.98]" onclick="window.location.href='{{DATA:SCREEN:SCREEN_13}}'">
+                                결제하기
+                                <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Quick Info -->
+<div class="mt-stack-md p-stack-md bg-secondary-container bg-opacity-10 rounded-xl border border-secondary-container border-opacity-20">
+<div class="flex gap-stack-sm">
+<span class="material-symbols-outlined text-secondary">info</span>
+<div class="text-caption font-caption text-on-secondary-container">
+                            지금 예약하면 <span class="font-bold">5% 적립</span> 혜택을 받을 수 있습니다. (약 9,150원)
+                        </div>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-low dark:bg-inverse-surface border-t border-border dark:border-outline-variant full-width bottom-0 mt-stack-xl">
+<div class="grid grid-cols-2 md:grid-cols-5 gap-stack-lg max-w-[1200px] mx-auto px-margin-x py-stack-xl">
+<div class="col-span-2">
+<span class="font-headline-md text-headline-md font-bold text-on-surface dark:text-inverse-on-surface">SpaceMate</span>
+<p class="mt-stack-md text-caption font-caption text-on-surface-variant dark:text-surface-variant max-w-xs">
+                    최고의 공간을 가장 스마트하게 연결하는 공간 매칭 서비스. 공간 이상의 가치를 경험하세요.
+                </p>
+<p class="mt-stack-xl text-caption font-caption text-on-surface-variant dark:text-surface-variant">© SpaceMate Inc. All rights reserved.</p>
+</div>
+<div>
+<h4 class="font-headline-sm text-headline-sm mb-stack-md">서비스</h4>
+<ul class="space-y-stack-sm">
+<li class=""><a class="font-caption text-caption text-on-surface-variant dark:text-surface-variant hover:underline hover:text-primary transition-all" href="#">회사소개</a></li>
+<li class=""><a class="font-caption text-caption text-on-surface-variant dark:text-surface-variant hover:underline hover:text-primary transition-all" href="#">이용안내</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-headline-sm text-headline-sm mb-stack-md">지원</h4>
+<ul class="space-y-stack-sm">
+<li class=""><a class="font-caption text-caption text-on-surface-variant dark:text-surface-variant hover:underline hover:text-primary transition-all" href="#">제휴문의</a></li>
+<li class=""><a class="font-caption text-caption text-on-surface-variant dark:text-surface-variant hover:underline hover:text-primary transition-all" href="#">관련서비스</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-headline-sm text-headline-sm mb-stack-md">글로벌</h4>
+<ul class="space-y-stack-sm">
+<li class=""><a class="font-caption text-caption text-on-surface-variant dark:text-surface-variant hover:underline hover:text-primary transition-all" href="#">서비스국가</a></li>
+</ul>
+</div>
+</div>
+</footer>
+<script>
+        // Simple Interaction logic for quantity stepper
+        document.querySelectorAll('.material-symbols-outlined').forEach(icon => {
+            if (icon.innerText === 'add' || icon.innerText === 'remove') {
+                icon.parentElement.addEventListener('click', function() {
+                    const counter = this.parentElement.querySelector('span:not(.material-symbols-outlined)');
+                    let val = parseInt(counter.innerText);
+                    if (icon.innerText === 'add') {
+                        counter.innerText = val + 1;
+                    } else if (val > 1) {
+                        counter.innerText = val - 1;
+                    }
+                });
+            }
+        });
+
+        // Sticky Header Effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 10) {
+                header.classList.add('glass-effect');
+            } else {
+                header.classList.remove('glass-effect');
+            }
+        });
+    </script>
+
+
+</body></html>
