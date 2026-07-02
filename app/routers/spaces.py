@@ -50,7 +50,11 @@ def list_spaces(
         "sort": sort,
     }
     spaces = repository.list_spaces(filters)
-    return {"count": len(spaces), "spaces": spaces}
+    # 프론트 카드에 별점/리뷰수 표시용 — Space 스키마는 안 건드리고 응답에서만 덧붙임.
+    enriched = [
+        {**s.model_dump(), **repository.get_rating_summary(s.id)} for s in spaces
+    ]
+    return {"count": len(spaces), "spaces": enriched}
 
 
 @router.get("/facilities")
@@ -66,11 +70,13 @@ def get_space_detail(space_id: str):
     if space is None:
         raise HTTPException(status_code=404, detail="space not found")
 
+    space_data = {**space.model_dump(), **repository.get_rating_summary(space_id)}
+
     # FR-02: 승인된(approved) 그룹만 노출. A가 아직 그룹을 안 만들었으면 빈 리스트.
     groups = repository.get_review_groups(space_id, status="approved")
     if groups:
-        return {"space": space, "review_mode": "grouped", "review_groups": groups}
+        return {"space": space_data, "review_mode": "grouped", "review_groups": groups}
 
     # 폴백: 그룹이 없으면 원문 후기 그대로 (US-01 AC-4)
     reviews = repository.get_reviews(space_id)
-    return {"space": space, "review_mode": "raw", "reviews": reviews}
+    return {"space": space_data, "review_mode": "raw", "reviews": reviews}

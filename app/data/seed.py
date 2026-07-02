@@ -22,7 +22,7 @@ SPACES: list[Space] = [
         facilities=["TV/프로젝터", "화이트보드", "인터넷/WIFI", "콘센트", "난방기",
                     "에어컨", "주차", "금연", "PC/노트북", "복사/인쇄기", "정수기", "내부화장실"],
         popularity=92,
-        image_url="https://placehold.co/400x300?text=Space+A",
+        image_url="images/회의실1.jpg",
     ),
     Space(
         id="sp02", name="서초 컨퍼런스룸", type="회의실", region="서초구",
@@ -30,7 +30,7 @@ SPACES: list[Space] = [
         facilities=["음향/마이크", "화이트보드", "인터넷/WIFI", "콘센트", "난방기",
                     "에어컨", "간단한 다과/음료", "주차", "금연", "PC/노트북", "복사/인쇄기", "내부화장실"],
         popularity=78,
-        image_url="https://placehold.co/400x300?text=Space+B",
+        image_url="images/회의실2.jpg",
     ),
     # sp03 = 시연용 기준 공간. 실제 리스팅 "[합정역1분거리파티룸] 스페이스T"
     # (https://www.spacecloud.kr/space/25288) 값 그대로 맞춤 — 가격/인원은 기존 값 유지,
@@ -54,8 +54,23 @@ SPACES: list[Space] = [
         facilities=["테라스/루프탑", "음향/마이크", "의자/테이블", "인터넷/WIFI", "난방기",
                     "에어컨", "주차", "내부화장실", "콘센트", "케이터링"],
         popularity=88,
-        image_url="https://placehold.co/400x300?text=Space+D",
+        image_url="images/party_room1.jpg",
         price_package=110000, package_hours="18:00~익일 08:00",
+    ),
+    # sp07/sp08 = 목록 화면 시각적 풍성함을 위해 추가한 파티룸 2개 (실사진 없어서 임시 플레이스홀더,
+    # 나중에 실제 사진 받으면 sp01/02/04/05/06 처럼 교체 예정).
+    Space(
+        id="sp07", name="이태원 루프탑 파티룸", type="파티룸", region="이태원",
+        capacity=15, price_per_hour_weekday=28000, price_per_hour_weekend=40000,
+        facilities=["루프탑", "빔프로젝터", "블루투스 스피커"], popularity=84,
+        image_url="https://placehold.co/400x300?text=Space+G",
+        price_package=90000, package_hours="19:00~익일 09:00",
+    ),
+    Space(
+        id="sp08", name="건대 스타일리시 파티룸", type="파티룸", region="건대입구",
+        capacity=12, price_per_hour_weekday=16000, price_per_hour_weekend=22000,
+        facilities=["미러볼", "노래방 기기", "블루투스 스피커"], popularity=90,
+        image_url="https://placehold.co/400x300?text=Space+H",
     ),
     Space(
         id="sp05", name="마포 공유주방 키친랩", type="공유주방", region="마포구",
@@ -63,7 +78,7 @@ SPACES: list[Space] = [
         facilities=["공용주방", "취사시설", "정수기", "난방기", "에어컨",
                     "주차", "콘센트", "내부화장실", "개인락커"],
         popularity=70,
-        image_url="https://placehold.co/400x300?text=Space+E",
+        image_url="images/공유주방1.jpg",
     ),
     Space(
         id="sp06", name="잠실 베이킹 스튜디오", type="공유주방", region="잠실",
@@ -71,14 +86,14 @@ SPACES: list[Space] = [
         facilities=["공용주방", "취사시설", "정수기", "난방기", "에어컨",
                     "주차", "콘센트", "내부화장실", "장비대여"],
         popularity=81,
-        image_url="https://placehold.co/400x300?text=Space+F",
+        image_url="images/공유주방2.jpg",
     ),
 ]
 
 PRODUCTS: list[Product] = [
-    Product(id="pd01", name="생일 케이크", price=35000, target_space_types=["파티룸"]),
-    Product(id="pd02", name="풍선 데코 세트", price=15000, target_space_types=["파티룸"]),
-    Product(id="pd03", name="다과 세트", price=20000, target_space_types=["회의실", "파티룸"]),
+    Product(id="pd01", name="생일 케이크", price=35000, target_space_types=["파티룸"], image_url="images/케이크.jpg"),
+    Product(id="pd02", name="풍선 데코 세트", price=15000, target_space_types=["파티룸"], image_url="images/풍선파.jpg"),
+    Product(id="pd03", name="다과 세트", price=20000, target_space_types=["회의실", "파티룸"], image_url="images/다과세트.jpg"),
     Product(id="pd04", name="음향기기 대여", price=25000, target_space_types=["회의실", "파티룸"]),
     Product(id="pd05", name="베이킹 재료 키트", price=18000, target_space_types=["공유주방"]),
 ]
@@ -116,6 +131,18 @@ _PLACEHOLDER_REVIEWS: list[Review] = [
     Review(id="rv28", space_id="sp06", content="청결하고 앞치마까지 대여해줘서 편했어요.", rating=5, created_at=date(2026, 5, 23)),
     Review(id="rv29", space_id="sp06", content="냉장고 용량이 넉넉해서 재료 보관하기 좋았어요.", rating=4, created_at=date(2026, 5, 24)),
     Review(id="rv30", space_id="sp06", content="주말엔 예약이 꽉 차서 미리 예약해야 해요.", rating=4, created_at=date(2026, 5, 25)),
+    # sp07
+    Review(id="rv31", space_id="sp07", content="루프탑에서 보는 야경이 정말 예뻤어요.", rating=5, created_at=date(2026, 5, 26)),
+    Review(id="rv32", space_id="sp07", content="이태원이라 접근성이 좋고 근처에 먹거리도 많아요.", rating=5, created_at=date(2026, 5, 27)),
+    Review(id="rv33", space_id="sp07", content="빔프로젝터 화질이 선명해서 영화 감상하기 좋았어요.", rating=4, created_at=date(2026, 5, 28)),
+    Review(id="rv34", space_id="sp07", content="루프탑이라 날씨 영향을 좀 받는 편이에요.", rating=3, created_at=date(2026, 5, 29)),
+    Review(id="rv35", space_id="sp07", content="공간이 넓어서 인원 많은 모임에 딱이었습니다.", rating=5, created_at=date(2026, 5, 30)),
+    # sp08
+    Review(id="rv36", space_id="sp08", content="미러볼이랑 노래방 기기 덕분에 분위기가 확 살았어요.", rating=5, created_at=date(2026, 5, 31)),
+    Review(id="rv37", space_id="sp08", content="건대입구역에서 가까워서 이동이 편했습니다.", rating=5, created_at=date(2026, 6, 1)),
+    Review(id="rv38", space_id="sp08", content="가격 대비 시설이 알차서 만족스러웠어요.", rating=5, created_at=date(2026, 6, 2)),
+    Review(id="rv39", space_id="sp08", content="방음이 살짝 아쉬웠지만 전체적으로 괜찮았어요.", rating=4, created_at=date(2026, 6, 3)),
+    Review(id="rv40", space_id="sp08", content="노래방 기기 음질이 좋아서 다들 만족했어요.", rating=5, created_at=date(2026, 6, 4)),
 ]
 
 # sp03(시연용)은 A가 크롤링한 실제 후기 367건을 그대로 사용 (spacecloud_reviews.csv)

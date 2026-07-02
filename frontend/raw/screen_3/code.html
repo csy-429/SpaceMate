@@ -1,0 +1,276 @@
+<!DOCTYPE html><html lang="ko"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>SpaceMate - 예약 옵션 및 추천</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-fixed-variant": "#005321",
+                    "accent-yellow": "#FFD014",
+                    "surface-dim": "#dcd9d9",
+                    "tertiary": "#005925",
+                    "tertiary-fixed-dim": "#4ae176",
+                    "primary-fixed-dim": "#cdbdff",
+                    "on-surface": "#1c1b1b",
+                    "surface-container-low": "#f6f3f2",
+                    "inverse-surface": "#313030",
+                    "surface-tint": "#6832eb",
+                    "secondary-fixed": "#ffdbd0",
+                    "on-secondary-fixed-variant": "#832600",
+                    "on-tertiary-container": "#6afe8e",
+                    "on-error": "#ffffff",
+                    "on-secondary-container": "#5d1900",
+                    "on-secondary-fixed": "#390c00",
+                    "outline": "#7a7487",
+                    "inverse-primary": "#cdbdff",
+                    "text-secondary": "#6B7280",
+                    "surface-bright": "#fcf9f8",
+                    "secondary": "#ab3500",
+                    "background": "#fcf9f8",
+                    "brand-hover": "#5B2ED1",
+                    "error": "#EF4444",
+                    "border": "#E5E2ED",
+                    "surface": "#F8F7FB",
+                    "on-primary-fixed-variant": "#4f00d0",
+                    "on-primary": "#ffffff",
+                    "secondary-fixed-dim": "#ffb59d",
+                    "on-primary-container": "#e6dcff",
+                    "on-error-container": "#93000a",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-container": "#6d3af1",
+                    "surface-container-highest": "#e5e2e1",
+                    "on-primary-fixed": "#20005f",
+                    "primary-fixed": "#e7deff",
+                    "on-secondary": "#ffffff",
+                    "on-surface-variant": "#494456",
+                    "on-tertiary-fixed": "#002109",
+                    "primary": "#540cd9",
+                    "surface-container-high": "#eae7e7",
+                    "on-tertiary": "#ffffff",
+                    "secondary-container": "#fe6a34",
+                    "on-background": "#1c1b1b",
+                    "outline-variant": "#cac3d8",
+                    "tertiary-fixed": "#6bff8f",
+                    "surface-container": "#f0eded",
+                    "inverse-on-surface": "#f3f0ef",
+                    "surface-variant": "#e5e2e1",
+                    "error-container": "#ffdad6",
+                    "tertiary-container": "#007432"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-lg": "24px",
+                    "stack-xl": "48px",
+                    "unit": "4px",
+                    "stack-xs": "4px",
+                    "margin-x": "24px",
+                    "stack-sm": "8px",
+                    "container-max": "1200px",
+                    "gutter": "16px",
+                    "stack-md": "16px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": ["Hanken Grotesk"],
+                    "label-md": ["Hanken Grotesk"],
+                    "caption": ["Hanken Grotesk"],
+                    "headline-md": ["Hanken Grotesk"],
+                    "headline-sm": ["Hanken Grotesk"],
+                    "body-md": ["Hanken Grotesk"],
+                    "headline-lg": ["Hanken Grotesk"]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "label-md": ["15px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "caption": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                    "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-sm": ["17px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "body-md": ["15px", {"lineHeight": "22px", "fontWeight": "400"}],
+                    "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+        .ambient-shadow {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Hanken Grotesk', sans-serif;
+            background-color: #fcf9f8;
+        }
+    </style>
+</head>
+<body class="text-on-background">
+<!-- TopAppBar -->
+<header class="bg-surface-container-lowest sticky top-0 z-50 shadow-sm border-b border-border">
+<div class="flex flex-col w-full max-w-[1200px] mx-auto px-margin-x">
+<div class="flex items-center justify-between py-stack-md">
+<!-- Brand Logo -->
+<a class="font-headline-lg text-headline-lg font-black text-primary" href="#">SpaceMate</a>
+<!-- Desktop Navigation Links -->
+<nav class="hidden md:flex items-center gap-stack-lg">
+<a class="font-label-md text-label-md text-primary border-b-2 border-primary pb-1 font-bold hover:text-primary transition-colors" href="#">공간찾기</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">추천</a>
+</nav>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-stack-md">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-all p-2">person</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-all p-2">login</button>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-[1200px] mx-auto px-margin-x py-stack-lg min-h-screen">
+<!-- Reservation Summary Bar -->
+<div class="w-full bg-primary-fixed rounded-xl p-stack-md mb-stack-xl flex flex-col md:flex-row md:items-center justify-between gap-stack-md ambient-shadow">
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">event_available</span>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-primary">예약 요약</h3>
+<p class="font-body-md text-body-md text-on-primary-fixed-variant">강남 테크 허브 컨퍼런스룸 | 10월 24일 14:00 - 18:00 (4시간)</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-label-md text-label-md text-primary-container font-bold">합계 120,000원</p>
+</div>
+</div>
+<!-- Section Title & AI Badge -->
+<div class="flex items-center gap-stack-sm mb-stack-lg">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">함께 준비하면 좋아요</h2>
+<span class="bg-secondary-container text-on-primary px-3 py-1 rounded-full text-caption font-bold uppercase tracking-wider flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+                AI RECOMMENDED
+            </span>
+</div>
+<!-- Product Card Grid (Bento/Modern Grid) -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-stack-lg mb-stack-xl">
+<!-- Product Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden ambient-shadow flex flex-col transition-transform hover:scale-[1.02] duration-300">
+<div class="aspect-video w-full overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional high-end catering platter with artisanal sandwiches, fresh fruits, and gourmet pastries arranged beautifully on a minimalist white table. The lighting is soft and natural, typical of a bright corporate office setting. The overall style is clean, modern, and appetizing, using a neutral palette with pops of fresh green and orange." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAD_SoHWQvEw2Twr0d5z2yPQt-d1AXZlVL3-aZ5AJtN9XsRVuyTUHTJ6tdyIA2ivkFVRL5rbb-uh2oPIInPZD8X1NjC6EqNzF1eA5zkUae4Rwpdv1mf4jl9tIdNXcm5taUiYSdzCzOrzbkcVXFv6TKdAKFtpwsUKZUSWXQeRusbIrZ7Murg6nUMIyRzTvHecsUhrGEjgc8FoSpnTmytM-63erdMOfetmrVo_hOIHqXC8h4K-iJycoo1d4fKFVoZbtuSlVS95RKrrLut">
+</div>
+<div class="p-stack-md flex flex-col flex-grow">
+<h4 class="font-headline-sm text-headline-sm text-on-surface mb-stack-xs">프리미엄 케이터링 박스 (10인분)</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mb-stack-md flex-grow">회의 중 간편하게 즐길 수 있는 샌드위치와 과일 세트</p>
+<div class="flex items-center justify-between mt-auto">
+<span class="font-headline-sm text-headline-sm text-primary">85,000원</span>
+<button class="h-10 px-stack-lg bg-surface-container text-primary font-bold rounded-lg hover:bg-primary hover:text-on-primary transition-all active:scale-95">담기</button>
+</div>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden ambient-shadow flex flex-col transition-transform hover:scale-[1.02] duration-300">
+<div class="aspect-video w-full overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="High-tech digital presentation equipment including a 4K laser projector and a sleek wireless presentation remote on a polished dark wood desk. The atmosphere is sophisticated and professional with subtle blue neon ambient lighting. The visual style is crisp and tech-forward, highlighting the precision of the hardware." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuak-oZ5wKiYwN8k1G9wZdKn3F6TCymT6_4_rVl3zh2Yzb9f3XmUgfC0CvhZDrRWdymPovAwgo3jD2wCULlzcfG5rR5LxEvrThpRStA-lPBpnODD3DgM3EmB6DwKoGDzf-9iZmQrMKXQqgvZYBY8FrIW-IBVou9eXLaHCKqKut2206uQeWtLlXAac9W_QvT456DCwX7aByPEUSLR0KEHylzaaPX6gvMjfVXIWEBWA06ojINwBhqonjEi1qqAa3Naj8upUoMX3rVfkb">
+</div>
+<div class="p-stack-md flex flex-col flex-grow">
+<h4 class="font-headline-sm text-headline-sm text-on-surface mb-stack-xs">고해상도 빔프로젝터 &amp; 스크린</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mb-stack-md flex-grow">대규모 발표를 위한 선명한 화질의 프로페셔널 장비 렌탈</p>
+<div class="flex items-center justify-between mt-auto">
+<span class="font-headline-sm text-headline-sm text-primary">45,000원</span>
+<button class="h-10 px-stack-lg bg-surface-container text-primary font-bold rounded-lg hover:bg-primary hover:text-on-primary transition-all active:scale-95">담기</button>
+</div>
+</div>
+</div>
+<!-- Product Card 3 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden ambient-shadow flex flex-col transition-transform hover:scale-[1.02] duration-300">
+<div class="aspect-video w-full overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A minimalist station featuring several chilled glass bottles of premium mineral water and a selection of eco-friendly paper coffee cups. The background is a blurred modern office lounge with high-quality furnishings. The lighting is bright and clean, emphasizing a refreshing and organized atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOpVTnzQN688MZOU1boyyu5Fz9dznPBuVWqyNKZnjpvjvYuQvmmZI525DN4lsTmgMukLcRG_Kwwj1EaRwyA98bT7MbfrAq11sru9hj3DCX2CRS2wuAPt99MJFWXyrl97BQh-vvvmOd1BXvenGX2UsokTVAnvHkEk1da77ZaOPKUrJ-Z1Q1Yr1yKtENvXJkWHaVhHfqq2Wr-6_oyYGen8kDKC5qY_7ah7PVXKhz6ym7mrmuCVNQoyucV4CWZQXnvDV7AhJ2ImYY8a3m">
+</div>
+<div class="p-stack-md flex flex-col flex-grow">
+<h4 class="font-headline-sm text-headline-sm text-on-surface mb-stack-xs">무제한 커피 &amp; 다과 서비스</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mb-stack-md flex-grow">인원수 제한 없이 즐기는 프리미엄 원두 커피와 음료</p>
+<div class="flex items-center justify-between mt-auto">
+<span class="font-headline-sm text-headline-sm text-primary">25,000원</span>
+<button class="h-10 px-stack-lg bg-surface-container text-primary font-bold rounded-lg hover:bg-primary hover:text-on-primary transition-all active:scale-95">담기</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Note -->
+<p class="text-center font-caption text-caption text-on-surface-variant mb-stack-xl">AI 추천이 지연되면 기본 추천 상품이 표시됩니다</p>
+</main>
+<!-- Bottom-right fixed CTA -->
+<div class="fixed bottom-8 right-8 z-40">
+<button class="h-14 px-8 bg-primary-container text-on-primary-container font-headline-sm text-headline-sm rounded-full shadow-lg flex items-center gap-stack-sm hover:scale-105 active:scale-95 transition-all glass-effect border border-white/20" onclick="window.location.href='{{DATA:SCREEN:SCREEN_10}}'">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shopping_cart</span>
+            장바구니로 이동
+            <span class="bg-accent-yellow text-on-surface w-6 h-6 rounded-full flex items-center justify-center text-caption font-bold">2</span>
+</button>
+</div>
+<!-- Footer -->
+<footer class="bg-surface-container-low border-t border-border mt-stack-xl">
+<div class="grid grid-cols-2 md:grid-cols-5 gap-stack-lg max-w-[1200px] mx-auto px-margin-x py-stack-xl">
+<div class="col-span-2 md:col-span-1">
+<span class="font-headline-md text-headline-md font-bold text-on-surface block mb-stack-sm">SpaceMate</span>
+<p class="font-caption text-caption text-on-surface-variant">© SpaceMate Inc. All rights reserved.</p>
+</div>
+<div class="flex flex-col gap-2">
+<span class="font-label-md text-label-md text-on-surface font-bold mb-1">회사소개</span>
+<a class="font-caption text-caption text-on-surface-variant hover:underline hover:text-primary" href="#">브랜드 스토리</a>
+<a class="font-caption text-caption text-on-surface-variant hover:underline hover:text-primary" href="#">채용 정보</a>
+</div>
+<div class="flex flex-col gap-2">
+<span class="font-label-md text-label-md text-on-surface font-bold mb-1">이용안내</span>
+<a class="font-caption text-caption text-on-surface-variant hover:underline hover:text-primary" href="#">자주 묻는 질문</a>
+<a class="font-caption text-caption text-on-surface-variant hover:underline hover:text-primary" href="#">취소 및 환불</a>
+</div>
+<div class="flex flex-col gap-2">
+<span class="font-label-md text-label-md text-on-surface font-bold mb-1">관련서비스</span>
+<a class="font-caption text-caption text-on-surface-variant hover:underline hover:text-primary" href="#">비즈니스 계정</a>
+<a class="font-caption text-caption text-on-surface-variant hover:underline hover:text-primary" href="#">공간 등록하기</a>
+</div>
+<div class="flex flex-col gap-2">
+<span class="font-label-md text-label-md text-on-surface font-bold mb-1">제휴문의</span>
+<a class="font-caption text-caption text-on-surface-variant hover:underline hover:text-primary" href="#">마케팅 제휴</a>
+<a class="font-caption text-caption text-on-surface-variant hover:underline hover:text-primary" href="#">대량 예약 상담</a>
+</div>
+</div>
+</footer>
+<script>
+        // Simple micro-interaction for adding items to cart
+        document.querySelectorAll('button').forEach(button => {
+            if (button.innerText === '담기') {
+                button.addEventListener('click', () => {
+                    const originalText = button.innerText;
+                    button.innerText = '추가됨';
+                    button.classList.remove('bg-surface-container', 'text-primary');
+                    button.classList.add('bg-tertiary-container', 'text-on-tertiary-container');
+                    
+                    setTimeout(() => {
+                        button.innerText = originalText;
+                        button.classList.add('bg-surface-container', 'text-primary');
+                        button.classList.remove('bg-tertiary-container', 'text-on-tertiary-container');
+                    }, 2000);
+                });
+            }
+        });
+    </script>
+
+
+
+
+
+
+</body></html>

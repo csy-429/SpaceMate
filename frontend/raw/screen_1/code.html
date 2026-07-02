@@ -1,0 +1,441 @@
+<!DOCTYPE html><html lang="ko"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>SpaceMate - 공간찾기</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed-variant": "#005321",
+                        "accent-yellow": "#FFD014",
+                        "surface-dim": "#dcd9d9",
+                        "tertiary": "#005925",
+                        "tertiary-fixed-dim": "#4ae176",
+                        "primary-fixed-dim": "#cdbdff",
+                        "on-surface": "#1c1b1b",
+                        "surface-container-low": "#f6f3f2",
+                        "inverse-surface": "#313030",
+                        "surface-tint": "#6832eb",
+                        "secondary-fixed": "#ffdbd0",
+                        "on-secondary-fixed-variant": "#832600",
+                        "on-tertiary-container": "#6afe8e",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#5d1900",
+                        "on-secondary-fixed": "#390c00",
+                        "outline": "#7a7487",
+                        "inverse-primary": "#cdbdff",
+                        "text-secondary": "#6B7280",
+                        "surface-bright": "#fcf9f8",
+                        "secondary": "#ab3500",
+                        "background": "#fcf9f8",
+                        "brand-hover": "#5B2ED1",
+                        "error": "#EF4444",
+                        "border": "#E5E2ED",
+                        "surface": "#F8F7FB",
+                        "on-primary-fixed-variant": "#4f00d0",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#ffb59d",
+                        "on-primary-container": "#e6dcff",
+                        "on-error-container": "#93000a",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-container": "#6d3af1",
+                        "surface-container-highest": "#e5e2e1",
+                        "on-primary-fixed": "#20005f",
+                        "primary-fixed": "#e7deff",
+                        "on-secondary": "#ffffff",
+                        "on-surface-variant": "#494456",
+                        "on-tertiary-fixed": "#002109",
+                        "primary": "#540cd9",
+                        "surface-container-high": "#eae7e7",
+                        "on-tertiary": "#ffffff",
+                        "secondary-container": "#fe6a34",
+                        "on-background": "#1c1b1b",
+                        "outline-variant": "#cac3d8",
+                        "tertiary-fixed": "#6bff8f",
+                        "surface-container": "#f0eded",
+                        "inverse-on-surface": "#f3f0ef",
+                        "surface-variant": "#e5e2e1",
+                        "error-container": "#ffdad6",
+                        "tertiary-container": "#007432"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-lg": "24px",
+                        "stack-xl": "48px",
+                        "unit": "4px",
+                        "stack-xs": "4px",
+                        "margin-x": "24px",
+                        "stack-sm": "8px",
+                        "container-max": "1200px",
+                        "gutter": "16px",
+                        "stack-md": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "label-md": ["Hanken Grotesk"],
+                        "caption": ["Hanken Grotesk"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "headline-sm": ["Hanken Grotesk"],
+                        "body-md": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "label-md": ["15px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "caption": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "headline-md": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "headline-sm": ["17px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "body-md": ["15px", {"lineHeight": "22px", "fontWeight": "400"}],
+                        "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        .venue-card-shadow {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .category-scroll::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md antialiased">
+<!-- TopAppBar (Sticky 4-tier design simulation) -->
+<header class="sticky top-0 z-50 w-full bg-surface-container-lowest border-b border-border shadow-sm">
+<div class="flex flex-col w-full max-w-[1200px] mx-auto px-margin-x">
+<!-- Tier 1: Logo & Global Nav -->
+<div class="flex items-center justify-between h-16">
+<div class="flex items-center gap-stack-lg">
+<img alt="SpaceMate Logo" class="h-8" src="data:image/png;base64,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">
+<nav class="hidden md:flex items-center gap-6">
+<a class="font-label-md text-label-md text-primary border-b-2 border-primary pb-1 font-bold transition-all" href="#">공간찾기</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">추천</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex items-center bg-surface-container-low px-4 py-2 rounded-lg border border-border">
+<span class="material-symbols-outlined text-outline mr-2">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm w-48" placeholder="어떤 공간을 찾으시나요?" type="text">
+</div>
+<div class="flex items-center gap-3">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">person</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">login</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Tier 2: Category Filters (Horizontal Scroll) -->
+<div class="border-t border-border">
+<div class="max-w-[1200px] mx-auto px-margin-x flex items-center gap-6 py-3 category-scroll overflow-x-auto whitespace-nowrap">
+<button class="flex flex-col items-center gap-1 group text-primary">
+<span class="material-symbols-outlined text-[24px]">house</span>
+<span class="font-caption text-caption font-semibold">파티룸</span>
+</button>
+<button class="flex flex-col items-center gap-1 group text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[24px]">work</span>
+<span class="font-caption text-caption">회의실</span>
+</button>
+<button class="flex flex-col items-center gap-1 group text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[24px]">photo_camera</span>
+<span class="font-caption text-caption">스튜디오</span>
+</button>
+<button class="flex flex-col items-center gap-1 group text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[24px]">event</span>
+<span class="font-caption text-caption">연습실</span>
+</button>
+<button class="flex flex-col items-center gap-1 group text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[24px]">celebration</span>
+<span class="font-caption text-caption">브라이덜샤워</span>
+</button>
+<button class="flex flex-col items-center gap-1 group text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[24px]">restaurant</span>
+<span class="font-caption text-caption">공유주방</span>
+</button>
+<button class="flex flex-col items-center gap-1 group text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[24px]">local_cafe</span>
+<span class="font-caption text-caption">카페</span>
+</button>
+</div>
+</div>
+</header>
+<main class="max-w-[1200px] mx-auto px-margin-x py-stack-lg">
+<!-- Promotion Banner -->
+<section class="mb-stack-xl">
+<div class="relative w-full h-[320px] rounded-xl overflow-hidden group cursor-pointer">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="A high-end, luxury photography of a sun-drenched modern loft studio in Seoul. The space features floor-to-ceiling windows, minimalist Scandinavian furniture, and lush green plants in the corners. The atmosphere is professional yet inviting, illuminated by soft morning sunlight that creates long shadows. The color palette is dominated by off-whites and warm oak wood tones, reflecting a clean corporate-modern aesthetic." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA-ptM9R2NpZ95ydjrWCkFyUmJAZ2jJr3j7NkapsO_o12AmQ8rvXCBjB-qt1JUOfYa3rLzqf-iFsoDP144OnVVZLDDCT0WGzthPsMb4Op7CAAQL_Bf8lcihEU6LPHCds_SJo_j9G0gKrADg-GUMwQ5FHZo0nH9dTz0pYbfvCkCaW1IDH8ILoR6UA-D2noJsTMer_jV5PslMKzZ3n_VZWUJRfIBo-YDTeBTKc0nHQXn8ESBq0PoJJoS7BRP_ND20WElVGeXNCvy17_XG')">
+</div>
+<div class="absolute inset-0 bg-gradient-to-r from-black/60 to-transparent flex flex-col justify-center px-12">
+<span class="bg-secondary-container text-on-secondary-container font-label-md text-label-md px-3 py-1 rounded-full w-fit mb-4">SpaceMate Choice</span>
+<h2 class="font-headline-lg text-headline-lg text-white mb-2">지금 바로 쓰는<br>실시간 예약</h2>
+<p class="text-white/80 font-body-md text-body-md mb-6 max-w-md">인기 있는 파티룸과 스튜디오를 가장 합리적인 가격으로 즉시 예약하세요.</p>
+<button class="bg-primary text-white font-label-md text-label-md px-8 py-3 rounded-lg w-fit hover:bg-brand-hover transition-all active:scale-95">
+                        공간 더 보기
+                    </button>
+</div>
+</div>
+</section>
+<!-- Space Card Grid -->
+<section class="mb-stack-xl">
+<div class="flex items-center justify-between mb-stack-lg">
+<h2 class="font-headline-md text-headline-md">인기 급상승 공간</h2>
+<div class="flex items-center gap-2 text-on-surface-variant cursor-pointer hover:text-primary transition-colors">
+<span class="font-label-md text-label-md">전체보기</span>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-stack-lg">
+<!-- Featured Card -->
+<div class="bg-surface-container-lowest rounded-xl venue-card-shadow overflow-hidden group border border-transparent hover:border-primary transition-all duration-300 cursor-pointer" onclick="window.location.href='{{DATA:SCREEN:SCREEN_6}}'">
+<div class="relative aspect-[4/3] overflow-hidden">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="Interior view of a modern aesthetic party room in Hongdae. The space is decorated with bright white minimalist walls and features professional mood lighting in soft purple and pink hues. High-quality velvet seating and a stylish bar area are visible. The lighting is clean and sophisticated, suitable for a professional corporate-modern design system with high-clarity photography." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBBff3PBSeSZZuZJS9rZUdMYUExp-Yx80ruHfA1gUqyfyYE9zBK4bRXUqkeDzYFrlpACOH9cqZG-8B6Un-XARAFTsE1cJSjZQgJy_rg5DwfPeWob8KbB6pdW-Po_VROLnfbic6Njw9IZVjFDfRrLtmjP_XojnN_B8Pw2zNTXcrInVuxyp3_F20r0wsYSm0fL9-ObguLkJu8CKvSKFtz1vjPs-y9OpVuNDbki_uUIX4TKJV4z2UKW3vrmzppdwAYivWV1pLbFrJMcUzR')">
+</div>
+<button class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:text-error transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">favorite</span>
+</button>
+<div class="absolute bottom-3 left-3 flex gap-2">
+<span class="bg-accent-yellow text-on-surface font-caption text-caption px-2 py-0.5 rounded-full font-bold">BEST</span>
+<span class="bg-primary text-white font-caption text-caption px-2 py-0.5 rounded-full font-bold">바로결제</span>
+</div>
+</div>
+<div class="p-stack-md">
+<div class="flex items-center gap-1 text-on-surface-variant mb-1">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span class="font-caption text-caption">홍대/합정</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm mb-1 truncate">홍대 감성 파티룸</h3>
+<div class="flex items-center gap-1 mb-3">
+<span class="material-symbols-outlined text-accent-yellow text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-md text-label-md">4.9</span>
+<span class="text-on-surface-variant text-sm">(124)</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="font-headline-sm text-headline-sm text-primary">20,000원</span>
+<span class="font-caption text-caption text-on-surface-variant">/ 시간</span>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl venue-card-shadow overflow-hidden group border border-transparent hover:border-primary transition-all duration-300">
+<div class="relative aspect-[4/3] overflow-hidden">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="A sleek corporate meeting room located in Gangnam with a view of the city skyline through large windows. The room is equipped with a large obsidian glass table, ergonomic chairs, and integrated high-tech audiovisual equipment. The lighting is bright and even, typical of a high-end business environment, following the modern white-label design aesthetic." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuABKArIqkG_IPGZ_oCXSJc_ufsJVjVdjn5yQjqoQHejs7AZfHh7pPf7CxhdmgD9CAOcgsvO1SG7RbzUBMOJgZudhxU0N00FTT9DQjjEB30dVNwkCespSp-kXUqvZElZdcs2Rg7dItW9_yiXux9kksspM73DA38fz5dRzVJhp2A1V1vL3QHVNWCvZ-2ayTwd5NlXl0CWz_WYpbUCdJt_5MJD4rx4aIHtlwzZYta9Mv3DtS1Ebu9lA_hStM-Xj2hpvNZJR4r5xZghNqtt')">
+</div>
+<button class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:text-error transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+</div>
+<div class="p-stack-md">
+<div class="flex items-center gap-1 text-on-surface-variant mb-1">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span class="font-caption text-caption">강남/서초</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm mb-1 truncate">강남 프리미엄 회의실</h3>
+<div class="flex items-center gap-1 mb-3">
+<span class="material-symbols-outlined text-accent-yellow text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-md text-label-md">4.8</span>
+<span class="text-on-surface-variant text-sm">(85)</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="font-headline-sm text-headline-sm text-primary">35,000원</span>
+<span class="font-caption text-caption text-on-surface-variant">/ 시간</span>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest rounded-xl venue-card-shadow overflow-hidden group border border-transparent hover:border-primary transition-all duration-300">
+<div class="relative aspect-[4/3] overflow-hidden">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="A bright, airy photo studio with professional lighting gear and several backdrops in neutral colors. The floor is light grey polished concrete and the ceiling is high with industrial features. Soft, diffused natural light fills the space, showcasing a clean, professional creative workspace. Perfect for the SpaceMate premium brand feel." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAW3dH7ppc995LzB4bmw5t1U89Dfa_UTDLdCkWcdgrLEWqMhl4NGmv3pB9hRa-w00v1LpjulJwVwz56jgRDp7dpwYWciv3p59F75vLQd3aGKsm6LqpyaxbfwztfNf5onhPu4G4UBcDEb05XLxM6yF2B2GyRE7x97Gt-mK75zl9yiiBb9mxd13pnbUiXcFTWbYhnVGmN2mX_ZMu6M9QjFWby4Qz2iISJnaHAjwVhlLjdN_pTTrxCNFnCWrYAvdYh7x1lK9pTZDKmCrdF')">
+</div>
+<button class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:text-error transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+<div class="absolute bottom-3 left-3">
+<span class="bg-primary text-white font-caption text-caption px-2 py-0.5 rounded-full font-bold">바로결제</span>
+</div>
+</div>
+<div class="p-stack-md">
+<div class="flex items-center gap-1 text-on-surface-variant mb-1">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span class="font-caption text-caption">성수/건대</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm mb-1 truncate">성수 채광 스튜디오</h3>
+<div class="flex items-center gap-1 mb-3">
+<span class="material-symbols-outlined text-accent-yellow text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-md text-label-md">4.7</span>
+<span class="text-on-surface-variant text-sm">(56)</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="font-headline-sm text-headline-sm text-primary">15,000원</span>
+<span class="font-caption text-caption text-on-surface-variant">/ 시간</span>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-container-lowest rounded-xl venue-card-shadow overflow-hidden group border border-transparent hover:border-primary transition-all duration-300">
+<div class="relative aspect-[4/3] overflow-hidden">
+<div class="w-full h-full bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="A cozy, inviting dance practice room with wall-to-wall mirrors and warm wood flooring. Professional sound systems are visible on the sides. The space is illuminated by warm, indirect LED lighting that creates an energetic and focused mood. The clean layout reflects a modern service that prioritizes user experience and high-quality venue representation." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDZRoK3E9uRD5sOaXcVslPUcoNl4DeWtbn7GwOnm-u97xiqKStnh0Rnhk98mmw23MxoRKpS4xyqAXkew9E6PYlhai9Zhnandfim-y4TuiTuF4KdP5pvd2I2kXfDjCOBDAJZhSEemk-zpH9wahOWZh5NCjt6K8h1sCyw0s8hKzkaKGTxPeMHu_zGtY62h97rApFN4Yjc9fvSWoH6Qm1zABqfXPw5-WRC5tqZee76LU4Pa0Z7Du1VPi_umFeJpXfD5h4RAijAjAPamIrR')">
+</div>
+<button class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:text-error transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+<div class="absolute bottom-3 left-3">
+<span class="bg-secondary text-white font-caption text-caption px-2 py-0.5 rounded-full font-bold">신규</span>
+</div>
+</div>
+<div class="p-stack-md">
+<div class="flex items-center gap-1 text-on-surface-variant mb-1">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span class="font-caption text-caption">신촌/이대</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm mb-1 truncate">이대 댄스 연습실</h3>
+<div class="flex items-center gap-1 mb-3">
+<span class="material-symbols-outlined text-accent-yellow text-sm" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-md text-label-md">5.0</span>
+<span class="text-on-surface-variant text-sm">(12)</span>
+</div>
+<div class="flex items-baseline gap-1">
+<span class="font-headline-sm text-headline-sm text-primary">12,000원</span>
+<span class="font-caption text-caption text-on-surface-variant">/ 시간</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination -->
+<div class="mt-stack-xl flex justify-center">
+<button class="bg-surface-container border border-border px-8 py-2.5 rounded-lg font-label-md text-label-md hover:bg-surface-variant transition-all active:scale-95 flex items-center gap-2">
+                    더보기 <span class="material-symbols-outlined text-[18px]">expand_more</span>
+</button>
+</div>
+</section>
+<!-- Secondary Section (Asymmetric Layout Example) -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-stack-lg mb-stack-xl">
+<div class="md:col-span-2 bg-primary-container text-on-primary-container p-8 rounded-xl flex items-center justify-between overflow-hidden relative">
+<div class="relative z-10">
+<h3 class="font-headline-lg text-headline-lg mb-2">사장님이라면?<br>공간을 등록해보세요.</h3>
+<p class="opacity-80 mb-6 max-w-xs font-body-md">놀고 있는 공간을 수익으로 바꾸는 가장 쉬운 방법, SpaceMate 파트너와 함께하세요.</p>
+<button class="bg-white text-primary px-6 py-2 rounded-lg font-bold hover:bg-surface transition-colors">파트너 등록하기</button>
+</div>
+<div class="absolute right-[-20px] bottom-[-20px] opacity-20">
+<span class="material-symbols-outlined text-[200px]" style="font-variation-settings: 'FILL' 1;">add_location_alt</span>
+</div>
+</div>
+<div class="bg-surface-container-high p-8 rounded-xl flex flex-col justify-center">
+<h3 class="font-headline-sm text-headline-sm mb-2 text-on-surface">도움이 필요하신가요?</h3>
+<p class="font-caption text-caption text-on-surface-variant mb-6">예약 변경, 취소 혹은 공간 문의 등 궁금한 점을 해결해 드립니다.</p>
+<div class="flex flex-col gap-2">
+<button class="flex items-center justify-between bg-white p-3 rounded-lg border border-border hover:border-primary transition-colors">
+<span class="text-sm font-semibold">자주 묻는 질문</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+<button class="flex items-center justify-between bg-white p-3 rounded-lg border border-border hover:border-primary transition-colors">
+<span class="text-sm font-semibold">1:1 실시간 채팅</span>
+<span class="material-symbols-outlined text-sm">chat</span>
+</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full bg-surface-container-low border-t border-border">
+<div class="grid grid-cols-2 md:grid-cols-5 gap-stack-lg max-w-[1200px] mx-auto px-margin-x py-stack-xl">
+<div class="col-span-2 md:col-span-1">
+<div class="font-headline-md text-headline-md font-bold text-on-surface mb-4">SpaceMate</div>
+<p class="text-on-surface-variant font-caption text-caption leading-relaxed">
+                    공간의 재발견, 일상의 특별한 변화를 선사하는 공간 예약 플랫폼 스페이스메이트입니다.
+                </p>
+</div>
+<div>
+<h4 class="font-headline-sm text-headline-sm text-primary mb-4">회사소개</h4>
+<ul class="flex flex-col gap-2">
+<li class=""><a class="font-caption text-caption text-on-surface-variant hover:underline hover:text-primary transition-all" href="#">회사 소개</a></li>
+<li class=""><a class="font-caption text-caption text-on-surface-variant hover:underline hover:text-primary transition-all" href="#">브랜드 스토리</a></li>
+<li class=""><a class="font-caption text-caption text-on-surface-variant hover:underline hover:text-primary transition-all" href="#">채용 안내</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-headline-sm text-headline-sm text-primary mb-4">이용안내</h4>
+<ul class="flex flex-col gap-2">
+<li class=""><a class="font-caption text-caption text-on-surface-variant hover:underline hover:text-primary transition-all" href="#">서비스 이용약관</a></li>
+<li class=""><a class="font-caption text-caption text-on-surface-variant hover:underline hover:text-primary transition-all" href="#">개인정보 처리방침</a></li>
+<li class=""><a class="font-caption text-caption text-on-surface-variant hover:underline hover:text-primary transition-all" href="#">위치기반 서비스</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-headline-sm text-headline-sm text-primary mb-4">관련서비스</h4>
+<ul class="flex flex-col gap-2">
+<li class=""><a class="font-caption text-caption text-on-surface-variant hover:underline hover:text-primary transition-all" href="#">SpaceMate 비즈니스</a></li>
+<li class=""><a class="font-caption text-caption text-on-surface-variant hover:underline hover:text-primary transition-all" href="#">파트너 센터</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-headline-sm text-headline-sm text-primary mb-4">제휴문의</h4>
+<ul class="flex flex-col gap-2">
+<li class=""><a class="font-caption text-caption text-on-surface-variant hover:underline hover:text-primary transition-all" href="#">광고/제휴 문의</a></li>
+<li class=""><a class="font-caption text-caption text-on-surface-variant hover:underline hover:text-primary transition-all" href="#">공간 대량 예약</a></li>
+</ul>
+</div>
+</div>
+<div class="max-w-[1200px] mx-auto px-margin-x pb-stack-lg flex flex-col md:flex-row justify-between items-center gap-4 text-on-surface-variant opacity-60">
+<div class="font-caption text-caption">© SpaceMate Inc. All rights reserved.</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-[20px]">face_nod</span>
+<span class="material-symbols-outlined text-[20px]">photo_camera</span>
+<span class="material-symbols-outlined text-[20px]">smart_display</span>
+</div>
+</div>
+</footer>
+<!-- Floating Action Button (FAB) -->
+<button class="fixed bottom-8 right-8 w-14 h-14 bg-primary text-white rounded-full shadow-lg flex items-center justify-center hover:scale-105 transition-transform z-40 active:scale-95">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">add</span>
+</button>
+<script>
+        // Micro-interaction for navigation active states
+        const navLinks = document.querySelectorAll('nav a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                navLinks.forEach(l => {
+                    l.classList.remove('text-primary', 'border-b-2', 'border-primary', 'font-bold');
+                    l.classList.add('text-on-surface-variant');
+                });
+                link.classList.add('text-primary', 'border-b-2', 'border-primary', 'font-bold');
+                link.classList.remove('text-on-surface-variant');
+            });
+        });
+
+        // Category scroll interaction
+        const categories = document.querySelectorAll('.category-scroll button');
+        categories.forEach(btn => {
+            btn.addEventListener('click', () => {
+                categories.forEach(b => {
+                    b.classList.remove('text-primary');
+                    b.classList.add('text-on-surface-variant');
+                    b.querySelector('span:last-child').classList.remove('font-semibold');
+                });
+                btn.classList.add('text-primary');
+                btn.classList.remove('text-on-surface-variant');
+                btn.querySelector('span:last-child').classList.add('font-semibold');
+            });
+        });
+    </script>
+
+
+</body></html>

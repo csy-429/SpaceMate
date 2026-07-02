@@ -91,6 +91,15 @@ def get_reviews(space_id: str) -> list[Review]:
     return [r for r in REVIEWS if r.space_id == space_id]
 
 
+def get_rating_summary(space_id: str) -> dict:
+    """공간의 평균 별점/리뷰 개수. REVIEWS(seed.py)에 이미 rating 필드가 있어서
+    별도 저장 없이 그때그때 계산한다. 프론트 카드 UI(별점+리뷰수)를 위해 신설 (2026-07-02)."""
+    ratings = [r.rating for r in REVIEWS if r.space_id == space_id]
+    if not ratings:
+        return {"avg_rating": None, "review_count": 0}
+    return {"avg_rating": round(sum(ratings) / len(ratings), 1), "review_count": len(ratings)}
+
+
 def get_review_groups(space_id: str, status: str = "approved") -> list[ReviewGroup]:
     return [g for g in _review_groups if g.space_id == space_id and g.status == status]
 

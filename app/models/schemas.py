@@ -50,6 +50,7 @@ class Product(BaseModel):
     name: str
     price: int
     target_space_types: list[str]  # 어떤 공간 유형에 추천할지
+    image_url: str | None = None  # 없으면 프론트에서 기본 아이콘으로 대체
 
 
 class CartItem(BaseModel):
