@@ -22,6 +22,7 @@ app.add_middleware(
 
 app.include_router(spaces.router, prefix="/spaces", tags=["spaces"])
 app.include_router(reviews.router, prefix="/reviews", tags=["reviews"])
+app.include_router(reviews.admin_router, prefix="/admin", tags=["admin"])
 app.include_router(reservations.router, prefix="/reservations", tags=["reservations"])
 app.include_router(recommendations.router, prefix="/recommendations", tags=["recommendations"])
 app.include_router(cart.router, prefix="/cart", tags=["cart"])
