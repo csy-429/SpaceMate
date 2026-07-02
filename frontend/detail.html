@@ -227,9 +227,12 @@
             const packageBlock = spaceData.price_package != null ? `
                 <div>
                     <button class="w-full flex items-center justify-between p-stack-md hover:bg-surface transition-colors text-left" id="toggle-package">
-                        <div>
-                            <h3 class="font-headline-sm text-headline-sm text-on-surface">올나잇 패키지</h3>
-                            <p class="font-label-md text-primary">₩${spaceData.price_package.toLocaleString()} / 패키지</p>
+                        <div class="flex items-start gap-3">
+                            <span class="radio-dot mt-1 w-4 h-4 rounded-full border-2 border-outline-variant flex-shrink-0" id="package-radio"></span>
+                            <div>
+                                <h3 class="font-headline-sm text-headline-sm text-on-surface">올나잇 패키지</h3>
+                                <p class="font-label-md text-primary">₩${spaceData.price_package.toLocaleString()} / 패키지</p>
+                            </div>
                         </div>
                         <span class="material-symbols-outlined text-outline-variant" id="package-icon">expand_more</span>
                     </button>
@@ -259,9 +262,12 @@
                         <div class="bg-surface-container-lowest border border-border rounded-xl shadow-lg overflow-hidden">
                             <div class="border-b border-border">
                                 <button class="w-full flex items-center justify-between p-stack-md hover:bg-surface transition-colors text-left" id="toggle-hourly">
-                                    <div>
-                                        <h3 class="font-headline-sm text-headline-sm text-on-surface">시간 단위 예약하기</h3>
-                                        <p class="font-label-md text-primary" id="hourly-price">₩${hourlyPrice.toLocaleString()} / 시간</p>
+                                    <div class="flex items-start gap-3">
+                                        <span class="radio-dot mt-1 w-4 h-4 rounded-full border-2 border-primary bg-primary flex-shrink-0" id="hourly-radio"></span>
+                                        <div>
+                                            <h3 class="font-headline-sm text-headline-sm text-on-surface">시간 단위 예약하기</h3>
+                                            <p class="font-label-md text-primary" id="hourly-price">₩${hourlyPrice.toLocaleString()} / 시간</p>
+                                        </div>
                                     </div>
                                     <span class="material-symbols-outlined text-outline-variant rotate-180" id="hourly-icon">expand_more</span>
                                 </button>
@@ -301,6 +307,23 @@
             attachHandlers(data);
         }
 
+        function updateRadioIndicators() {
+            const hourlyRadio = document.getElementById('hourly-radio');
+            const packageRadio = document.getElementById('package-radio');
+            const checkedCls = ['border-primary', 'bg-primary'];
+            const uncheckedCls = ['border-outline-variant'];
+            if (hourlyRadio) {
+                hourlyRadio.classList.toggle('border-primary', activeMode === 'hourly');
+                hourlyRadio.classList.toggle('bg-primary', activeMode === 'hourly');
+                hourlyRadio.classList.toggle('border-outline-variant', activeMode !== 'hourly');
+            }
+            if (packageRadio) {
+                packageRadio.classList.toggle('border-primary', activeMode === 'package');
+                packageRadio.classList.toggle('bg-primary', activeMode === 'package');
+                packageRadio.classList.toggle('border-outline-variant', activeMode !== 'package');
+            }
+        }
+
         function attachHandlers(data) {
             // 아코디언
             const hourlyContent = document.getElementById('hourly-content');
@@ -312,6 +335,7 @@
                 hourlyContent.classList.remove('hidden');
                 hourlyIcon.classList.add('rotate-180');
                 if (packageContent) { packageContent.classList.add('hidden'); packageIcon.classList.remove('rotate-180'); }
+                updateRadioIndicators();
             });
             const togglePkg = document.getElementById('toggle-package');
             if (togglePkg) {
@@ -321,8 +345,10 @@
                     packageIcon.classList.add('rotate-180');
                     hourlyContent.classList.add('hidden');
                     hourlyIcon.classList.remove('rotate-180');
+                    updateRadioIndicators();
                 });
             }
+            updateRadioIndicators();
 
             // 리뷰 그룹 칩
             document.querySelectorAll('.review-chip').forEach(chip => {

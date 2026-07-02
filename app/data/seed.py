@@ -56,14 +56,14 @@ SPACES: list[Space] = [
         id="sp07", name="이태원 루프탑 파티룸", type="파티룸", region="이태원",
         capacity=15, price_per_hour_weekday=28000, price_per_hour_weekend=40000,
         facilities=["루프탑", "빔프로젝터", "블루투스 스피커"], popularity=84,
-        image_url="https://placehold.co/400x300?text=Space+G",
+        image_url="images/party_room2.png",
         price_package=90000, package_hours="19:00~익일 09:00",
     ),
     Space(
         id="sp08", name="건대 스타일리시 파티룸", type="파티룸", region="건대입구",
         capacity=12, price_per_hour_weekday=16000, price_per_hour_weekend=22000,
         facilities=["미러볼", "노래방 기기", "블루투스 스피커"], popularity=90,
-        image_url="https://placehold.co/400x300?text=Space+H",
+        image_url="images/party_room3.jpg",
     ),
     Space(
         id="sp05", name="마포 공유주방 키친랩", type="공유주방", region="마포구",
