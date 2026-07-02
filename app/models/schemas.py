@@ -42,6 +42,7 @@ class ReviewGroup(BaseModel):
     label: str                 # 예: "방음", "청결", "접근성"
     summary: str
     status: Literal["pending", "approved", "rejected"] = "pending"
+    review_ids: list[str] = Field(default_factory=list)  # 요약 근거 원본 리뷰 id (관리자 승인 화면 원문 대조용)
 
 
 class Product(BaseModel):

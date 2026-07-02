@@ -65,20 +65,13 @@ def get_review_groups(space_id: str, status: str = "approved") -> list[ReviewGro
     return [g for g in _review_groups if g.space_id == space_id and g.status == status]
 
 
-def add_review_group(group: ReviewGroup) -> None:
-    _review_groups.append(group)
-
-
-def update_review_group_status(group_id: str, status: str) -> ReviewGroup | None:
-    for g in _review_groups:
-        if g.id == group_id:
-            g.status = status
-            return g
-    return None
-
-
-def list_pending_groups() -> list[ReviewGroup]:
-    return [g for g in _review_groups if g.status == "pending"]
+def replace_review_groups(space_id: str, groups: list[ReviewGroup]) -> None:
+    """해당 공간의 기존 그룹을 전부 걷어내고 새로 생성된 그룹으로 교체한다.
+    (FR-02: 승인 절차 없이 자동 노출이라 그룹핑을 다시 돌리면 항상 최신 결과로 갈아끼우는 게
+    맞음. append만 하면 같은 space_id에 재실행할 때마다 id가 겹치는 그룹이 계속 쌓임.)"""
+    global _review_groups
+    _review_groups = [g for g in _review_groups if g.space_id != space_id]
+    _review_groups.extend(groups)
 
 
 # ---- Reservation [클론] ----
