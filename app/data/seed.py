@@ -19,16 +19,14 @@ SPACES: list[Space] = [
     Space(
         id="sp01", name="강남 스퀘어 회의실 A", type="회의실", region="강남구",
         capacity=8, price_per_hour_weekday=15000, price_per_hour_weekend=20000,
-        facilities=["TV/프로젝터", "화이트보드", "인터넷/WIFI", "콘센트", "난방기",
-                    "에어컨", "주차", "금연", "PC/노트북", "복사/인쇄기", "정수기", "내부화장실"],
+        facilities=["화이트보드", "빔프로젝터", "와이파이"],
         popularity=92,
         image_url="images/회의실1.jpg",
     ),
     Space(
         id="sp02", name="서초 컨퍼런스룸", type="회의실", region="서초구",
         capacity=12, price_per_hour_weekday=20000, price_per_hour_weekend=25000,
-        facilities=["음향/마이크", "화이트보드", "인터넷/WIFI", "콘센트", "난방기",
-                    "에어컨", "간단한 다과/음료", "주차", "금연", "PC/노트북", "복사/인쇄기", "내부화장실"],
+        facilities=["화상회의 장비", "화이트보드", "커피머신"],
         popularity=78,
         image_url="images/회의실2.jpg",
     ),
@@ -38,11 +36,7 @@ SPACES: list[Space] = [
     Space(
         id="sp03", name="[합정역1분거리파티룸] 스페이스T", type="파티룸", region="합정",
         capacity=10, price_per_hour_weekday=13000, price_per_hour_weekend=18000,
-        # [확인 필요] TV/프로젝터·음향/마이크 등은 원래 있던 빔프로젝터/블루투스 스피커를
-        # FACILITY_OPTIONS 표준 명칭으로 맞춘 것, 나머지(인터넷/WIFI 등)는 파티룸 통상 기준
-        # 추정치. 실제 리스팅 페이지 기준으로 다르면 알려주세요.
-        facilities=["TV/프로젝터", "음향/마이크", "인터넷/WIFI", "난방기", "에어컨",
-                    "콘센트", "내부화장실", "미러볼"],
+        facilities=["빔프로젝터", "블루투스 스피커", "미러볼"],
         popularity=95,
         image_url="https://formeqly4682.edge.naverncp.com/service/168164444_919f3ecb8d32bb46a2bd5a96c07a9098.jpeg?type=m&w=900&h=900&autorotate=true&quality=90",
         price_package=100000, package_hours="18:00~익일 08:00",
@@ -51,8 +45,7 @@ SPACES: list[Space] = [
     Space(
         id="sp04", name="성수동 루프탑 파티룸", type="파티룸", region="성수동",
         capacity=20, price_per_hour_weekday=35000, price_per_hour_weekend=50000,
-        facilities=["테라스/루프탑", "음향/마이크", "의자/테이블", "인터넷/WIFI", "난방기",
-                    "에어컨", "주차", "내부화장실", "콘센트", "케이터링"],
+        facilities=["루프탑", "블루투스 스피커", "테이블세팅"],
         popularity=88,
         image_url="images/party_room1.jpg",
         price_package=110000, package_hours="18:00~익일 08:00",
@@ -75,16 +68,14 @@ SPACES: list[Space] = [
     Space(
         id="sp05", name="마포 공유주방 키친랩", type="공유주방", region="마포구",
         capacity=6, price_per_hour_weekday=18000, price_per_hour_weekend=22000,
-        facilities=["공용주방", "취사시설", "정수기", "난방기", "에어컨",
-                    "주차", "콘센트", "내부화장실", "개인락커"],
+        facilities=["4구 인덕션", "오븐", "식기세트"],
         popularity=70,
         image_url="images/공유주방1.jpg",
     ),
     Space(
         id="sp06", name="잠실 베이킹 스튜디오", type="공유주방", region="잠실",
         capacity=8, price_per_hour_weekday=22000, price_per_hour_weekend=28000,
-        facilities=["공용주방", "취사시설", "정수기", "난방기", "에어컨",
-                    "주차", "콘센트", "내부화장실", "장비대여"],
+        facilities=["오븐 2대", "냉장고", "식기세트", "앞치마 대여"],
         popularity=81,
         image_url="images/공유주방2.jpg",
     ),
