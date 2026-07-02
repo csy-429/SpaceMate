@@ -26,11 +26,17 @@ admin_router = APIRouter()
 
 @router.get("/{space_id}")
 def list_reviews(space_id: str):
+    # spaces.py의 get_space_detail과 동일 패턴: 존재하지 않는 공간은 404,
+    # 존재하지만 후기가 0건인 공간은 빈 리스트(둘을 구분해야 프론트가 에러/빈상태를 다르게 처리 가능)
+    if repository.get_space(space_id) is None:
+        raise HTTPException(status_code=404, detail="space not found")
     return repository.get_reviews(space_id)
 
 
 @router.get("/{space_id}/groups")
 def list_review_groups(space_id: str):
+    if repository.get_space(space_id) is None:
+        raise HTTPException(status_code=404, detail="space not found")
     return repository.get_review_groups(space_id, status="approved")
 
 

@@ -5,8 +5,9 @@
        자동으로 그룹 요약을 노출한다 — 지금은 승인된 그룹이 없으므로 원문 후기로
        폴백한다 (PRD US-01 AC-4: "AI 미작동 시 후기 원문이 그대로 표시된다").
 
-GET /spaces          - 목록 (type/region/capacity/sort 쿼리 필터)
-GET /spaces/{id}     - 상세 (공간 정보 + 후기(그룹 or 원문))
+GET /spaces              - 목록 (type/region/capacity/facilities/가격범위/이용유형/sort 쿼리 필터)
+GET /spaces/facilities   - 편의시설 체크박스용 전체 옵션 목록 (프론트에서 하드코딩 안 해도 되게)
+GET /spaces/{id}         - 상세 (공간 정보 + 후기(그룹 or 원문))
 """
 from typing import Literal
 
@@ -26,13 +27,37 @@ def list_spaces(
     capacity: int | None = Query(
         None, ge=1, description="최소 수용 인원 (이 값 이상인 공간만)"
     ),
+    facilities: list[str] | None = Query(
+        None, description="편의시설 필터, 체크한 항목 전부 갖춘 공간만 (예: ?facilities=주차&facilities=화이트보드)"
+    ),
+    min_price: int | None = Query(None, ge=0, description="최소 평일 시간당 요금"),
+    max_price: int | None = Query(None, ge=0, description="최대 평일 시간당 요금"),
+    usage_type: Literal["전체", "시간당", "패키지"] | None = Query(
+        None, description='이용유형 탭. "패키지"만 필터링 의미 있음(price_package 있는 공간). "월단위"는 데이터 모델에 없어 미지원'
+    ),
     sort: Literal["price", "popularity"] | None = Query(
         None, description="정렬 기준: price(평일요금 오름차순) | popularity(인기 내림차순)"
     ),
 ):
-    filters = {"type": type, "region": region, "capacity": capacity, "sort": sort}
+    filters = {
+        "type": type,
+        "region": region,
+        "capacity": capacity,
+        "facilities": facilities,
+        "min_price": min_price,
+        "max_price": max_price,
+        "usage_type": usage_type,
+        "sort": sort,
+    }
     spaces = repository.list_spaces(filters)
     return {"count": len(spaces), "spaces": spaces}
+
+
+@router.get("/facilities")
+def list_facility_options():
+    """편의시설 체크박스 목록. /{space_id}보다 먼저 등록해야 "facilities"가
+    space_id로 안 잡히고 이 라우트로 매칭됨 (FastAPI는 등록 순서대로 매칭)."""
+    return {"facilities": repository.FACILITY_OPTIONS}
 
 
 @router.get("/{space_id}")

@@ -16,6 +16,26 @@ from app.models.schemas import (
 )
 from app.data.seed import SPACES, PRODUCTS, REVIEWS
 
+# ---- 편의시설 필터 옵션 (스페이스클라우드 필터 패널 원본 캡처 기준, 최종 확정 46개) ----
+FACILITY_OPTIONS: list[str] = [
+    "TV/프로젝터", "인터넷/WIFI", "복사/인쇄기",
+    "화이트보드", "음향/마이크", "취사시설",
+    "음식물반입가능", "주류반입가능", "샤워시설",
+    "주차", "금연", "반려동물동반가능",
+    "PC/노트북", "의자/테이블", "콘센트",
+    "24시운영", "연중무휴", "카페/레스토랑",
+    "간단한 다과/음료", "개인락커", "메일서비스",
+    "공용주방", "정수기", "케이터링",
+    "난방기", "에어컨", "팩스",
+    "창고서비스", "택배발송서비스", "내부화장실",
+    "탈의실", "테라스/루프탑", "라운지/대기실",
+    "전신거울", "바베큐시설", "도어락",
+    "전기", "장비대여", "장작판매",
+    "온수", "마트/편의점", "놀이터",
+    "산책로", "구급약품", "남/여 화장실 구분",
+    "급수시설",
+]
+
 # ---- 런타임 상태 (메모리) ----
 _review_groups: list[ReviewGroup] = []            # AI 생성 그룹, 최초엔 비어있음
 _cart: dict[str, list[CartEntry]] = {}             # session_id -> items
@@ -32,6 +52,25 @@ def list_spaces(filters: dict) -> list[Space]:
         result = [s for s in result if s.region == filters["region"]]
     if filters.get("capacity"):
         result = [s for s in result if s.capacity >= filters["capacity"]]
+
+    # 편의시설: 체크한 항목을 전부 갖춘 공간만 (AND 매칭)
+    facilities = filters.get("facilities")
+    if facilities:
+        required = set(facilities)
+        result = [s for s in result if required.issubset(set(s.facilities))]
+
+    # 가격 범위: 평일 시간당 요금 기준 (정렬 기준(sort=price)이랑 동일 필드 사용해서 일관성 유지)
+    if filters.get("min_price") is not None:
+        result = [s for s in result if s.price_per_hour_weekday >= filters["min_price"]]
+    if filters.get("max_price") is not None:
+        result = [s for s in result if s.price_per_hour_weekday <= filters["max_price"]]
+
+    # 이용유형: "패키지"만 price_package 있는 공간으로 좁힘. "시간당"은 전 공간이 시간당
+    # 요금(필수 필드)을 갖고 있어서 필터링 의미가 없음(전체와 동일) — "월단위"는
+    # 데이터 모델에 없어서 미지원 (프론트에서 탭 자체를 안 보여주거나 비활성화 필요).
+    usage_type = filters.get("usage_type")
+    if usage_type == "패키지":
+        result = [s for s in result if s.price_package is not None]
 
     sort_by = filters.get("sort")
     if sort_by == "price":
