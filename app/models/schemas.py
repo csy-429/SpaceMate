@@ -21,6 +21,12 @@ class Space(BaseModel):
     facilities: list[str]
     popularity: int            # 베스트순 정렬용
     image_url: str
+    description: str = ""      # 상세페이지 "공간소개" 탭 본문 (자유 텍스트, 줄바꿈 포함 가능)
+    # 아래 2개는 optional — 비어있으면 프론트에서 공통 문구/기존 facilities 칩으로 폴백한다.
+    # 실제 리스팅 값이 있는 공간(sp03)만 채워 넣는다.
+    # (환불정책은 전 공간 공통이라 여기 필드 없이 프론트에 고정 문구로 둔다 — 2026-07-02)
+    facility_notes: list[str] = Field(default_factory=list)   # "시설안내" 탭 상세 항목 (번호 리스트)
+    notice_items: list[str] = Field(default_factory=list)     # "유의사항" 탭 상세 항목
     price_package: int | None = None      # 올나잇 패키지 고정가 (미제공 공간은 None)
     package_hours: str | None = None      # 패키지 시간대 표시용, 예: "18:00~익일 08:00"
     base_capacity: int | None = None      # 기준 인원 (초과 시 인당 추가요금 발생, 없으면 초과요금 미적용)
