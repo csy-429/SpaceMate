@@ -1,0 +1,261 @@
+<!DOCTYPE html><html lang="ko"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>SpaceMate - 장바구니</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        body { font-family: 'Hanken Grotesk', sans-serif; background-color: #fcf9f8; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .card-shadow { box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "accent-yellow": "#FFD014", "on-surface": "#1c1b1b", "surface-container-low": "#f6f3f2",
+                        "background": "#fcf9f8", "error": "#EF4444", "border": "#E5E2ED",
+                        "on-primary": "#ffffff", "surface-container-lowest": "#ffffff",
+                        "on-surface-variant": "#494456", "primary": "#540cd9", "brand-hover": "#5B2ED1",
+                        "secondary-container": "#fe6a34", "on-secondary-container": "#5d1900", "outline-variant": "#cac3d8"
+                    },
+                    "spacing": { "stack-lg": "24px", "stack-xl": "48px", "margin-x": "24px", "stack-sm": "8px", "stack-md": "16px", "stack-xs": "4px" },
+                    "fontFamily": { "headline-lg": ["Hanken Grotesk"], "headline-md": ["Hanken Grotesk"], "headline-sm": ["Hanken Grotesk"], "label-md": ["Hanken Grotesk"], "body-md": ["Hanken Grotesk"], "caption": ["Hanken Grotesk"] },
+                    "fontSize": {
+                        "headline-lg": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "headline-md": ["22px", {"lineHeight": "28px", "fontWeight": "700"}],
+                        "headline-sm": ["17px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "label-md": ["15px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "body-md": ["15px", {"lineHeight": "22px", "fontWeight": "400"}],
+                        "caption": ["13px", {"lineHeight": "18px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface">
+<header class="bg-surface-container-lowest border-b border-border shadow-sm sticky top-0 z-50">
+<div class="flex flex-col w-full max-w-[1200px] mx-auto px-margin-x h-20 justify-center">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-stack-lg">
+<span class="font-headline-lg text-headline-lg font-black text-primary">SpaceMate</span>
+<nav class="hidden md:flex gap-stack-md">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="index.html">공간찾기</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="recommend.html">추천</a>
+</nav>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-[1200px] mx-auto px-margin-x py-stack-xl min-h-[600px]">
+<div class="mb-stack-lg">
+<h1 class="font-headline-lg text-headline-lg">장바구니</h1>
+</div>
+<div id="cart-body" class="flex flex-col lg:flex-row gap-stack-lg items-start">
+<p class="text-on-surface-variant py-8">불러오는 중...</p>
+</div>
+</main>
+<footer class="bg-surface-container-low border-t border-border mt-stack-xl">
+<div class="max-w-[1200px] mx-auto px-margin-x py-stack-xl text-center text-caption text-on-surface-variant">
+© SpaceMate Inc. All rights reserved.
+</div>
+</footer>
+<script src="app.js"></script>
+<script>
+        let cartItems = [];
+        let allProducts = [];
+
+        function fmtDateLabel(dateStr) {
+            const [y, m, d] = dateStr.split('-').map(Number);
+            return `${y}년 ${m}월 ${d}일`;
+        }
+
+        async function fetchSpaceItemDetail(item) {
+            const res = await fetch(`${API_BASE}/reservations/${item.ref_id}`);
+            if (!res.ok) return null;
+            const reservation = await res.json();
+            const spaceRes = await fetch(`${API_BASE}/spaces/${reservation.space_id}`);
+            const space = (await spaceRes.json()).space;
+            let timeLabel;
+            if (reservation.reservation_type === 'package') {
+                timeLabel = space.package_hours || '올나잇 패키지';
+            } else {
+                const end = (reservation.start_hour + reservation.hours) % 24;
+                timeLabel = `${String(reservation.start_hour).padStart(2, '0')}:00 - ${String(end).padStart(2, '0')}:00 (${reservation.hours}시간)`;
+            }
+            return { item, reservation, space, timeLabel };
+        }
+
+        function renderSpaceSection(spaceDetails) {
+            if (!spaceDetails.length) return '';
+            const rows = spaceDetails.map(({ item, reservation, space, timeLabel }) => `
+                <div class="p-stack-md flex flex-col md:flex-row gap-stack-md border-b border-border last:border-b-0">
+                    <div class="w-full md:w-32 h-32 rounded-lg bg-surface flex-shrink-0 bg-cover bg-center" style="background-image: url('${space.image_url}')"></div>
+                    <div class="flex-1 flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-headline-sm text-headline-sm mb-stack-xs">${space.name}</h3>
+                            <p class="text-on-surface-variant font-body-md text-body-md flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[16px]">calendar_today</span>
+                                ${fmtDateLabel(reservation.date)} | ${timeLabel}
+                            </p>
+                            <p class="text-on-surface-variant font-body-md text-body-md flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[16px]">location_on</span>
+                                ${space.region}
+                            </p>
+                        </div>
+                        <div class="mt-stack-md flex justify-between items-center">
+                            <button class="remove-item text-error flex items-center gap-1 font-label-md" data-item-id="${item.id}">
+                                <span class="material-symbols-outlined text-[18px]">delete</span> 삭제
+                            </button>
+                            <span class="font-headline-md text-headline-md text-primary">₩ ${reservation.total_price.toLocaleString()}</span>
+                        </div>
+                    </div>
+                </div>`).join('');
+            return `
+                <div class="bg-surface-container-lowest rounded-xl card-shadow overflow-hidden border border-border">
+                    <div class="p-stack-md border-b border-border bg-surface-container-low">
+                        <h2 class="font-headline-sm text-headline-sm">공간 예약</h2>
+                    </div>
+                    ${rows}
+                </div>`;
+        }
+
+        function renderProductSection(productItems) {
+            if (!productItems.length) return '';
+            const rows = productItems.map(item => {
+                const product = allProducts.find(p => p.id === item.ref_id);
+                if (!product) return '';
+                const imageHtml = product.image_url
+                    ? `<div class="w-full h-full bg-cover bg-center" style="background-image: url('${product.image_url}')"></div>`
+                    : `<span class="material-symbols-outlined text-[36px] text-on-surface-variant">shopping_bag</span>`;
+                return `
+                    <div class="p-stack-md flex flex-col md:flex-row gap-stack-md border-b border-border last:border-b-0">
+                        <div class="w-full md:w-24 h-24 rounded-lg bg-surface flex-shrink-0 flex items-center justify-center overflow-hidden">
+                            ${imageHtml}
+                        </div>
+                        <div class="flex-1 flex flex-col md:flex-row justify-between items-start md:items-center">
+                            <div class="mb-stack-sm md:mb-0">
+                                <h3 class="font-label-md text-label-md">${product.name}</h3>
+                                <p class="text-on-surface-variant text-caption font-caption">수량 ${item.quantity}개</p>
+                            </div>
+                            <div class="flex items-center gap-stack-md">
+                                <span class="font-headline-sm text-headline-sm text-on-surface">₩ ${(product.price * item.quantity).toLocaleString()}</span>
+                                <button class="remove-item text-on-surface-variant hover:text-error transition-colors" data-item-id="${item.id}">
+                                    <span class="material-symbols-outlined">close</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>`;
+            }).join('');
+            return `
+                <div class="bg-surface-container-lowest rounded-xl card-shadow overflow-hidden border border-border">
+                    <div class="p-stack-md border-b border-border bg-surface-container-low">
+                        <h2 class="font-headline-sm text-headline-sm">추가 상품</h2>
+                    </div>
+                    ${rows}
+                </div>`;
+        }
+
+        async function computeTotal(spaceDetails, productItems) {
+            const spaceTotal = spaceDetails.reduce((sum, d) => sum + d.reservation.total_price, 0);
+            const productTotal = productItems.reduce((sum, item) => {
+                const product = allProducts.find(p => p.id === item.ref_id);
+                return sum + (product ? product.price * item.quantity : 0);
+            }, 0);
+            return { spaceTotal, productTotal, total: spaceTotal + productTotal };
+        }
+
+        function renderSummary(spaceTotal, productTotal, total) {
+            return `
+                <aside class="w-full lg:w-[380px] lg:sticky lg:top-[104px]">
+                    <div class="bg-surface-container-lowest rounded-xl card-shadow border border-border overflow-hidden">
+                        <div class="p-stack-md border-b border-border">
+                            <h2 class="font-headline-sm text-headline-sm">결제 내역</h2>
+                        </div>
+                        <div class="p-stack-md space-y-stack-md">
+                            <div class="flex justify-between text-body-md font-body-md text-on-surface-variant">
+                                <span>공간 대여료</span>
+                                <span class="text-on-surface">₩ ${spaceTotal.toLocaleString()}</span>
+                            </div>
+                            <div class="flex justify-between text-body-md font-body-md text-on-surface-variant">
+                                <span>추가 상품 합계</span>
+                                <span class="text-on-surface">₩ ${productTotal.toLocaleString()}</span>
+                            </div>
+                            <div class="pt-stack-md border-t border-border flex justify-between items-center">
+                                <span class="font-headline-sm text-headline-sm">총 결제 금액</span>
+                                <span class="font-headline-lg text-[24px] text-primary">₩ ${total.toLocaleString()}</span>
+                            </div>
+                            <div class="pt-stack-md">
+                                <p class="text-caption font-caption text-on-surface-variant mb-stack-md">
+                                    실제 결제가 발생하지 않는 목업입니다.
+                                </p>
+                                <button id="checkout-btn" class="w-full h-[48px] bg-primary text-on-primary rounded-lg font-label-md text-label-md flex items-center justify-center gap-2 hover:bg-brand-hover transition-all active:scale-[0.98]">
+                                    결제하기
+                                    <span class="material-symbols-outlined">arrow_forward</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </aside>`;
+        }
+
+        async function loadCart() {
+            const body = document.getElementById('cart-body');
+            try {
+                const [cartRes, productsRes] = await Promise.all([
+                    fetch(`${API_BASE}/cart/${getSessionId()}`),
+                    fetch(`${API_BASE}/products`),
+                ]);
+                cartItems = await cartRes.json();
+                allProducts = await productsRes.json();
+
+                if (!cartItems.length) {
+                    body.innerHTML = `
+                        <div class="w-full text-center py-16">
+                            <span class="material-symbols-outlined text-[48px] text-on-surface-variant">shopping_cart</span>
+                            <p class="text-on-surface-variant mt-2">장바구니가 비어있습니다.</p>
+                            <a href="index.html" class="text-primary underline mt-2 inline-block">공간 둘러보러 가기</a>
+                        </div>`;
+                    return;
+                }
+
+                const spaceItems = cartItems.filter(i => i.item_type === 'space');
+                const productItems = cartItems.filter(i => i.item_type === 'product');
+                const spaceDetails = (await Promise.all(spaceItems.map(fetchSpaceItemDetail))).filter(Boolean);
+                const { spaceTotal, productTotal, total } = await computeTotal(spaceDetails, productItems);
+
+                body.innerHTML = `
+                    <div class="flex-1 w-full space-y-stack-md">
+                        ${renderSpaceSection(spaceDetails)}
+                        ${renderProductSection(productItems)}
+                    </div>
+                    ${renderSummary(spaceTotal, productTotal, total)}`;
+
+                document.querySelectorAll('.remove-item').forEach(btn => {
+                    btn.addEventListener('click', () => removeItem(btn.dataset.itemId));
+                });
+                const checkoutBtn = document.getElementById('checkout-btn');
+                if (checkoutBtn) checkoutBtn.addEventListener('click', () => location.href = 'checkout.html');
+            } catch (err) {
+                console.error(err);
+                body.innerHTML = '<p class="text-error py-8">장바구니를 불러오지 못했습니다. 백엔드 서버 연결을 확인해주세요.</p>';
+            }
+        }
+
+        async function removeItem(itemId) {
+            try {
+                await fetch(`${API_BASE}/cart/${getSessionId()}/${itemId}`, { method: 'DELETE' });
+                loadCart();
+            } catch (err) {
+                console.error(err);
+                alert('삭제에 실패했습니다.');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadCart);
+    </script>
+</body></html>

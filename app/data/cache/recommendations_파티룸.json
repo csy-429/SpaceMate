@@ -1,0 +1,30 @@
+[
+  {
+    "id": "pd01",
+    "name": "생일 케이크",
+    "price": 35000,
+    "target_space_types": [
+      "파티룸"
+    ],
+    "image_url": null
+  },
+  {
+    "id": "pd02",
+    "name": "풍선 데코 세트",
+    "price": 15000,
+    "target_space_types": [
+      "파티룸"
+    ],
+    "image_url": null
+  },
+  {
+    "id": "pd03",
+    "name": "다과 세트",
+    "price": 20000,
+    "target_space_types": [
+      "회의실",
+      "파티룸"
+    ],
+    "image_url": null
+  }
+]

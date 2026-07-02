@@ -7,7 +7,7 @@ SpaceMate FastAPI 진입점.
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import spaces, reviews, reservations, recommendations, cart, checkout
+from app.routers import spaces, reviews, reservations, recommendations, cart, checkout, products
 
 app = FastAPI(title="SpaceMate API")
 
@@ -27,6 +27,7 @@ app.include_router(reservations.router, prefix="/reservations", tags=["reservati
 app.include_router(recommendations.router, prefix="/recommendations", tags=["recommendations"])
 app.include_router(cart.router, prefix="/cart", tags=["cart"])
 app.include_router(checkout.router, prefix="/checkout", tags=["checkout"])
+app.include_router(products.router, prefix="/products", tags=["products"])
 
 
 @app.get("/")

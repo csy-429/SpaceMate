@@ -248,11 +248,11 @@
 <div class="font-caption text-caption">© SpaceMate Inc. All rights reserved.</div>
 </div>
 </footer>
+<script src="app.js"></script>
 <script>
         // ---------------------------------------------------------------
-        // 백엔드 연동 (Dev B). 배포 시 API_BASE만 실제 도메인으로 교체하면 됨.
+        // 백엔드 연동 (Dev B). API_BASE/getSessionId는 app.js 공용 스크립트에서 옴.
         // ---------------------------------------------------------------
-        const API_BASE = "http://127.0.0.1:8000";
         // PRD MVP 범위 (Non-Goals: 회의실/파티룸/공유주방 외 공간 유형 제외)
         const SUPPORTED_TYPES = ["파티룸", "회의실", "공유주방"];
         let currentType = "파티룸"; // 초기 활성 탭과 동일하게 시작

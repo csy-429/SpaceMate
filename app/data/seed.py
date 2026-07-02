@@ -20,13 +20,13 @@ SPACES: list[Space] = [
         id="sp01", name="강남 스퀘어 회의실 A", type="회의실", region="강남구",
         capacity=8, price_per_hour_weekday=15000, price_per_hour_weekend=20000,
         facilities=["화이트보드", "빔프로젝터", "와이파이"], popularity=92,
-        image_url="https://placehold.co/400x300?text=Space+A",
+        image_url="images/회의실1.jpg",
     ),
     Space(
         id="sp02", name="서초 컨퍼런스룸", type="회의실", region="서초구",
         capacity=12, price_per_hour_weekday=20000, price_per_hour_weekend=25000,
         facilities=["화상회의 장비", "화이트보드", "커피머신"], popularity=78,
-        image_url="https://placehold.co/400x300?text=Space+B",
+        image_url="images/회의실2.jpg",
     ),
     # sp03 = 시연용 기준 공간. 실제 리스팅 "[합정역1분거리파티룸] 스페이스T"
     # (https://www.spacecloud.kr/space/25288) 값 그대로 맞춤 — 가격/인원은 기존 값 유지,
@@ -43,27 +43,27 @@ SPACES: list[Space] = [
         id="sp04", name="성수동 루프탑 파티룸", type="파티룸", region="성수동",
         capacity=20, price_per_hour_weekday=35000, price_per_hour_weekend=50000,
         facilities=["루프탑", "블루투스 스피커", "테이블세팅"], popularity=88,
-        image_url="https://placehold.co/400x300?text=Space+D",
+        image_url="images/party_room1.jpg",
         price_package=110000, package_hours="18:00~익일 08:00",
     ),
     Space(
         id="sp05", name="마포 공유주방 키친랩", type="공유주방", region="마포구",
         capacity=6, price_per_hour_weekday=18000, price_per_hour_weekend=22000,
         facilities=["4구 인덕션", "오븐", "식기세트"], popularity=70,
-        image_url="https://placehold.co/400x300?text=Space+E",
+        image_url="images/공유주방1.jpg",
     ),
     Space(
         id="sp06", name="잠실 베이킹 스튜디오", type="공유주방", region="잠실",
         capacity=8, price_per_hour_weekday=22000, price_per_hour_weekend=28000,
         facilities=["오븐 2대", "냉장고", "식기세트", "앞치마 대여"], popularity=81,
-        image_url="https://placehold.co/400x300?text=Space+F",
+        image_url="images/공유주방2.jpg",
     ),
 ]
 
 PRODUCTS: list[Product] = [
-    Product(id="pd01", name="생일 케이크", price=35000, target_space_types=["파티룸"]),
-    Product(id="pd02", name="풍선 데코 세트", price=15000, target_space_types=["파티룸"]),
-    Product(id="pd03", name="다과 세트", price=20000, target_space_types=["회의실", "파티룸"]),
+    Product(id="pd01", name="생일 케이크", price=35000, target_space_types=["파티룸"], image_url="images/케이크.jpg"),
+    Product(id="pd02", name="풍선 데코 세트", price=15000, target_space_types=["파티룸"], image_url="images/풍선파.jpg"),
+    Product(id="pd03", name="다과 세트", price=20000, target_space_types=["회의실", "파티룸"], image_url="images/다과세트.jpg"),
     Product(id="pd04", name="음향기기 대여", price=25000, target_space_types=["회의실", "파티룸"]),
     Product(id="pd05", name="베이킹 재료 키트", price=18000, target_space_types=["공유주방"]),
 ]

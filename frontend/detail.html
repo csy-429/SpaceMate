@@ -67,8 +67,8 @@
 © SpaceMate Inc. All rights reserved.
 </div>
 </footer>
+<script src="app.js"></script>
 <script>
-        const API_BASE = "http://127.0.0.1:8000";
         const params = new URLSearchParams(location.search);
         const spaceId = params.get('id') || 'sp03';
 
@@ -406,6 +406,23 @@
                     return;
                 }
                 const reservation = await res.json();
+
+                // 예약을 장바구니에 담아둠 -> 나중에 보완상품 추가해도 결제 때 같이 잡힘 (FR-05/06)
+                try {
+                    await fetch(`${API_BASE}/cart`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json; charset=utf-8' },
+                        body: JSON.stringify({
+                            session_id: getSessionId(),
+                            item_type: 'space',
+                            ref_id: reservation.reservation_id,
+                            quantity: 1,
+                        }),
+                    });
+                } catch (e) {
+                    console.error('장바구니 담기 실패 (예약 자체는 성공):', e);
+                }
+
                 location.href = `recommend.html?reservation_id=${reservation.reservation_id}&space_type=${encodeURIComponent(spaceData.type)}&guest_count=${guestCount}`;
             } catch (err) {
                 console.error(err);

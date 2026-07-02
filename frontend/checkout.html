@@ -1,0 +1,271 @@
+<!DOCTYPE html><html lang="ko"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>SpaceMate - 통합 결제 (목업)</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        body { font-family: 'Hanken Grotesk', sans-serif; background-color: #fcf9f8; color: #1c1b1b; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+        .payment-radio:checked + label { border-color: #540cd9; background-color: #e7deff; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "accent-yellow": "#FFD014", "on-surface": "#1c1b1b", "background": "#fcf9f8",
+                        "secondary-container": "#fe6a34", "on-secondary-container": "#5d1900",
+                        "border": "#E5E2ED", "surface": "#F8F7FB", "on-primary-fixed-variant": "#4f00d0",
+                        "primary-container": "#6d3af1", "on-primary-container": "#e6dcff",
+                        "tertiary-container": "#007432", "on-tertiary-container": "#6afe8e",
+                        "on-surface-variant": "#494456", "primary": "#540cd9", "brand-hover": "#5B2ED1",
+                        "outline-variant": "#cac3d8", "tertiary": "#005925"
+                    },
+                    "spacing": { "stack-lg": "24px", "stack-xl": "48px", "margin-x": "24px", "stack-sm": "8px", "stack-md": "16px" },
+                    "fontFamily": { "headline-lg": ["Hanken Grotesk"], "headline-md": ["Hanken Grotesk"], "headline-sm": ["Hanken Grotesk"], "label-md": ["Hanken Grotesk"], "caption": ["Hanken Grotesk"], "body-md": ["Hanken Grotesk"] },
+                    "fontSize": {
+                        "headline-lg": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "headline-md": ["22px", {"lineHeight": "28px", "fontWeight": "700"}],
+                        "headline-sm": ["17px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "label-md": ["15px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "caption": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+                        "body-md": ["15px", {"lineHeight": "22px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background min-h-screen flex flex-col">
+<header class="bg-surface-container-lowest sticky top-0 z-50 shadow-sm border-b border-border">
+<div class="flex flex-col w-full max-w-[1200px] mx-auto px-margin-x h-20 justify-center">
+<div class="flex items-center justify-between">
+<a class="font-headline-lg text-headline-lg font-black text-primary" href="index.html">SpaceMate</a>
+</div>
+</div>
+</header>
+<main class="flex-grow w-full max-w-[1200px] mx-auto px-margin-x py-stack-lg">
+<div class="bg-secondary-container text-on-secondary-container px-6 py-3 rounded-xl mb-stack-lg flex items-center justify-center">
+<span class="material-symbols-outlined mr-2">info</span>
+<p class="font-label-md text-label-md">실제 결제가 발생하지 않는 목업 화면입니다</p>
+</div>
+<div id="checkout-body" class="grid grid-cols-1 lg:grid-cols-12 gap-stack-lg">
+<p class="col-span-12 text-center text-on-surface-variant py-8">불러오는 중...</p>
+</div>
+</main>
+<footer class="bg-surface-container-low border-t border-border mt-stack-xl">
+<div class="max-w-[1200px] mx-auto px-margin-x py-stack-xl text-center text-caption text-on-surface-variant">
+© SpaceMate Inc. All rights reserved.
+</div>
+</footer>
+<script src="app.js"></script>
+<script>
+        let cartItems = [];
+        let allProducts = [];
+        let spaceDetails = [];
+
+        function fmtDateLabel(dateStr) {
+            const [y, m, d] = dateStr.split('-').map(Number);
+            return `${y}.${String(m).padStart(2, '0')}.${String(d).padStart(2, '0')}`;
+        }
+
+        async function fetchSpaceItemDetail(item) {
+            const res = await fetch(`${API_BASE}/reservations/${item.ref_id}`);
+            if (!res.ok) return null;
+            const reservation = await res.json();
+            const spaceRes = await fetch(`${API_BASE}/spaces/${reservation.space_id}`);
+            const space = (await spaceRes.json()).space;
+            let timeLabel;
+            if (reservation.reservation_type === 'package') {
+                timeLabel = space.package_hours || '올나잇 패키지';
+            } else {
+                const end = (reservation.start_hour + reservation.hours) % 24;
+                timeLabel = `${String(reservation.start_hour).padStart(2, '0')}:00 - ${String(end).padStart(2, '0')}:00 (${reservation.hours}시간)`;
+            }
+            return { item, reservation, space, timeLabel };
+        }
+
+        function renderOrderCards(spaceDetails, productItems) {
+            const spaceCards = spaceDetails.map(({ reservation, space, timeLabel }) => `
+                <div class="bg-white p-stack-md rounded-xl shadow-sm border border-border flex gap-4">
+                    <div class="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-surface bg-cover bg-center" style="background-image: url('${space.image_url}')"></div>
+                    <div class="flex-grow">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="bg-primary-container text-on-primary-container px-2 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider mb-1 inline-block">분리정산: 공간</span>
+                                <h3 class="font-headline-sm text-headline-sm">${space.name}</h3>
+                                <p class="text-on-surface-variant font-body-md text-body-md">${fmtDateLabel(reservation.date)} | ${timeLabel}</p>
+                            </div>
+                            <span class="font-headline-sm text-headline-sm text-primary">${reservation.total_price.toLocaleString()}원</span>
+                        </div>
+                    </div>
+                </div>`).join('');
+
+            const productCards = productItems.map(item => {
+                const product = allProducts.find(p => p.id === item.ref_id);
+                if (!product) return '';
+                const imageHtml = product.image_url
+                    ? `<div class="w-full h-full bg-cover bg-center" style="background-image: url('${product.image_url}')"></div>`
+                    : `<span class="material-symbols-outlined text-[32px] text-on-surface-variant">shopping_bag</span>`;
+                return `
+                <div class="bg-white p-stack-md rounded-xl shadow-sm border border-border flex gap-4">
+                    <div class="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-surface flex items-center justify-center">
+                        ${imageHtml}
+                    </div>
+                    <div class="flex-grow">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="bg-tertiary-container text-on-tertiary-container px-2 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider mb-1 inline-block">분리정산: 상품</span>
+                                <h3 class="font-headline-sm text-headline-sm">${product.name}</h3>
+                                <p class="text-on-surface-variant font-body-md text-body-md">수량 ${item.quantity}개</p>
+                            </div>
+                            <span class="font-headline-sm text-headline-sm text-primary">${(product.price * item.quantity).toLocaleString()}원</span>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+
+            return spaceCards + productCards;
+        }
+
+        function renderPaymentMethods() {
+            const methods = [
+                { id: 'pay_card', icon: 'credit_card', label: '신용카드' },
+                { id: 'pay_transfer', icon: 'account_balance', label: '계좌이체' },
+                { id: 'pay_kakao', icon: 'account_balance_wallet', label: '카카오페이' },
+                { id: 'pay_naver', icon: 'payments', label: '네이버페이' },
+            ];
+            return methods.map((m, i) => `
+                <div class="relative">
+                    <input ${i === 0 ? 'checked' : ''} class="hidden payment-radio" id="${m.id}" name="payment" type="radio">
+                    <label class="flex flex-col items-center justify-center p-stack-md border border-border rounded-xl cursor-pointer hover:border-primary transition-all text-center h-28" for="${m.id}">
+                        <span class="material-symbols-outlined text-primary mb-2">${m.icon}</span>
+                        <span class="font-label-md text-label-md block">${m.label}</span>
+                        <span class="text-[10px] text-on-surface-variant mt-1 px-1.5 py-0.5 bg-surface rounded">Mock</span>
+                    </label>
+                </div>`).join('');
+        }
+
+        async function loadCheckout() {
+            const body = document.getElementById('checkout-body');
+            try {
+                const [cartRes, productsRes] = await Promise.all([
+                    fetch(`${API_BASE}/cart/${getSessionId()}`),
+                    fetch(`${API_BASE}/products`),
+                ]);
+                cartItems = await cartRes.json();
+                allProducts = await productsRes.json();
+
+                if (!cartItems.length) {
+                    body.innerHTML = `
+                        <div class="col-span-12 text-center py-16">
+                            <p class="text-on-surface-variant">장바구니가 비어있습니다.</p>
+                            <a href="index.html" class="text-primary underline mt-2 inline-block">공간 둘러보러 가기</a>
+                        </div>`;
+                    return;
+                }
+
+                const spaceItems = cartItems.filter(i => i.item_type === 'space');
+                const productItems = cartItems.filter(i => i.item_type === 'product');
+                spaceDetails = (await Promise.all(spaceItems.map(fetchSpaceItemDetail))).filter(Boolean);
+
+                const spaceTotal = spaceDetails.reduce((sum, d) => sum + d.reservation.total_price, 0);
+                const productTotal = productItems.reduce((sum, item) => {
+                    const product = allProducts.find(p => p.id === item.ref_id);
+                    return sum + (product ? product.price * item.quantity : 0);
+                }, 0);
+                const total = spaceTotal + productTotal;
+
+                body.innerHTML = `
+                    <div class="lg:col-span-8 space-y-stack-lg">
+                        <h1 class="font-headline-lg text-headline-lg mb-2">결제하기</h1>
+                        <div class="space-y-stack-md">
+                            ${renderOrderCards(spaceDetails, productItems)}
+                        </div>
+                        <div class="bg-white p-stack-lg rounded-xl shadow-sm border border-border">
+                            <h2 class="font-headline-sm text-headline-sm mb-stack-md">결제 수단 선택</h2>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-stack-sm">${renderPaymentMethods()}</div>
+                        </div>
+                        <div class="p-4 bg-surface rounded-lg space-y-2">
+                            <label class="flex items-center cursor-pointer">
+                                <input class="rounded border-outline text-primary focus:ring-primary h-5 w-5" type="checkbox" id="agree-terms">
+                                <span class="ml-3 font-body-md text-body-md text-on-surface">모든 결제 정보 및 유의사항에 동의합니다. (필수)</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-4">
+                        <div class="sticky top-24 space-y-stack-md">
+                            <div class="bg-white p-stack-lg rounded-xl shadow-md border border-border">
+                                <h2 class="font-headline-sm text-headline-sm mb-stack-lg border-b border-border pb-stack-sm">최종 결제 금액</h2>
+                                <div class="space-y-stack-sm mb-stack-lg">
+                                    <div class="flex justify-between text-body-md font-body-md">
+                                        <span class="text-on-surface-variant">공간 대관료</span>
+                                        <span>${spaceTotal.toLocaleString()}원</span>
+                                    </div>
+                                    <div class="flex justify-between text-body-md font-body-md">
+                                        <span class="text-on-surface-variant">상품/서비스</span>
+                                        <span>${productTotal.toLocaleString()}원</span>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-end border-t border-dashed border-outline-variant pt-stack-md mb-stack-xl">
+                                    <span class="font-headline-sm text-headline-sm">총 결제 예정액</span>
+                                    <span class="font-headline-lg text-headline-lg text-primary">${total.toLocaleString()}원</span>
+                                </div>
+                                <button id="checkout-btn" class="w-full bg-primary hover:bg-brand-hover text-white py-4 rounded-xl font-headline-sm text-headline-sm shadow-lg transition-all active:scale-[0.98] flex items-center justify-center group">
+                                    <span>${total.toLocaleString()}원 결제하기</span>
+                                    <span class="material-symbols-outlined ml-2 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                                </button>
+                                <p class="mt-4 text-caption text-on-surface-variant text-center">
+                                    본 결제는 테스트를 위한 목업입니다.<br>실제 비용은 청구되지 않습니다.
+                                </p>
+                            </div>
+                            <div class="flex items-center justify-center text-on-surface-variant opacity-60">
+                                <span class="material-symbols-outlined text-[18px] mr-1">verified_user</span>
+                                <span class="text-[12px] font-medium">Safe &amp; Secure Payment by SpaceMate</span>
+                            </div>
+                        </div>
+                    </div>`;
+
+                document.getElementById('checkout-btn').addEventListener('click', handleCheckout);
+            } catch (err) {
+                console.error(err);
+                body.innerHTML = '<p class="col-span-12 text-error py-8">결제 정보를 불러오지 못했습니다. 백엔드 서버 연결을 확인해주세요.</p>';
+            }
+        }
+
+        async function handleCheckout() {
+            const agreed = document.getElementById('agree-terms').checked;
+            if (!agreed) {
+                alert('결제 정보 및 유의사항에 동의해주세요.');
+                return;
+            }
+            const btn = document.getElementById('checkout-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin mr-2">progress_activity</span> 처리 중...';
+            try {
+                const res = await fetch(`${API_BASE}/checkout`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json; charset=utf-8' },
+                    body: JSON.stringify({ session_id: getSessionId() }),
+                });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const order = await res.json();
+                // 주문 조회 API가 따로 없어서, 결제완료 화면에서 다시 그려줄 수 있게
+                // 방금 받은 주문 응답을 저장해둠. sessionStorage는 새 탭/새로고침에 취약해서
+                // 세션ID처럼 localStorage 사용 (탭/새로고침 넘나들어도 유지됨).
+                localStorage.setItem('spacemate_last_order', JSON.stringify(order));
+                location.href = 'complete.html';
+            } catch (err) {
+                console.error(err);
+                alert('결제 처리 중 오류가 발생했습니다. 백엔드 서버 연결을 확인해주세요.');
+                btn.disabled = false;
+                loadCheckout();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadCheckout);
+    </script>
+</body></html>

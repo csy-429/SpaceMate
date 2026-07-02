@@ -1,0 +1,215 @@
+<!DOCTYPE html><html lang="ko"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>SpaceMate - 예약 옵션 및 추천</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        body { font-family: 'Hanken Grotesk', sans-serif; background-color: #fcf9f8; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-effect { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); }
+        .ambient-shadow { box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "accent-yellow": "#FFD014", "on-surface": "#1c1b1b", "surface-container-low": "#f6f3f2",
+                        "background": "#fcf9f8", "error": "#EF4444", "border": "#E5E2ED",
+                        "on-primary": "#ffffff", "surface-container-lowest": "#ffffff",
+                        "primary-container": "#6d3af1", "on-primary-container": "#e6dcff",
+                        "on-surface-variant": "#494456", "on-primary-fixed-variant": "#4f00d0", "primary-fixed": "#e7deff",
+                        "primary": "#540cd9", "secondary-container": "#fe6a34", "on-tertiary-container": "#6afe8e",
+                        "tertiary-container": "#007432"
+                    },
+                    "spacing": { "stack-lg": "24px", "stack-xl": "48px", "margin-x": "24px", "stack-sm": "8px", "stack-md": "16px", "stack-xs": "4px" },
+                    "fontFamily": { "headline-lg": ["Hanken Grotesk"], "headline-md": ["Hanken Grotesk"], "headline-sm": ["Hanken Grotesk"], "label-md": ["Hanken Grotesk"], "body-md": ["Hanken Grotesk"], "caption": ["Hanken Grotesk"] },
+                    "fontSize": {
+                        "headline-lg": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "headline-md": ["22px", {"lineHeight": "28px", "fontWeight": "700"}],
+                        "headline-sm": ["17px", {"lineHeight": "24px", "fontWeight": "600"}],
+                        "label-md": ["15px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "body-md": ["15px", {"lineHeight": "22px", "fontWeight": "400"}],
+                        "caption": ["13px", {"lineHeight": "18px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="text-on-background">
+<header class="bg-surface-container-lowest sticky top-0 z-50 shadow-sm border-b border-border">
+<div class="flex flex-col w-full max-w-[1200px] mx-auto px-margin-x">
+<div class="flex items-center justify-between py-stack-md">
+<span class="font-headline-lg text-headline-lg font-black text-primary">SpaceMate</span>
+<nav class="hidden md:flex items-center gap-stack-lg">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="index.html">공간찾기</a>
+<a class="font-label-md text-label-md text-primary border-b-2 border-primary pb-1 font-bold" href="recommend.html">추천</a>
+</nav>
+</div>
+</div>
+</header>
+<main class="max-w-[1200px] mx-auto px-margin-x py-stack-lg min-h-screen">
+<div id="reservation-summary" class="w-full bg-primary-fixed rounded-xl p-stack-md mb-stack-xl flex flex-col md:flex-row md:items-center justify-between gap-stack-md ambient-shadow">
+<p class="text-on-surface-variant">예약 정보를 불러오는 중...</p>
+</div>
+<div class="flex items-center gap-stack-sm mb-stack-lg">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">함께 준비하면 좋아요</h2>
+<span id="ai-badge" class="bg-secondary-container text-on-primary px-3 py-1 rounded-full text-caption font-bold uppercase tracking-wider flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+AI RECOMMENDED
+</span>
+</div>
+<div id="product-grid" class="grid grid-cols-1 md:grid-cols-3 gap-stack-lg mb-stack-xl">
+<p class="col-span-3 text-center text-on-surface-variant py-8">추천 상품을 불러오는 중...</p>
+</div>
+<p class="text-center font-caption text-caption text-on-surface-variant mb-stack-xl">AI 추천이 지연되면 기본 추천 상품이 표시됩니다</p>
+</main>
+<div class="fixed bottom-8 right-8 z-40">
+<button class="h-14 px-8 bg-primary-container text-on-primary-container font-headline-sm text-headline-sm rounded-full shadow-lg flex items-center gap-stack-sm hover:scale-105 active:scale-95 transition-all glass-effect border border-white/20" onclick="location.href='cart.html'">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shopping_cart</span>
+장바구니로 이동
+<span class="bg-accent-yellow text-on-surface w-6 h-6 rounded-full flex items-center justify-center text-caption font-bold" id="cart-count">0</span>
+</button>
+</div>
+<footer class="bg-surface-container-low border-t border-border mt-stack-xl">
+<div class="max-w-[1200px] mx-auto px-margin-x py-stack-xl text-center text-caption text-on-surface-variant">
+© SpaceMate Inc. All rights reserved.
+</div>
+</footer>
+<script src="app.js"></script>
+<script>
+        const params = new URLSearchParams(location.search);
+        const reservationId = params.get('reservation_id');
+        const spaceTypeParam = params.get('space_type');
+        const guestCountParam = Number(params.get('guest_count')) || 2;
+
+        function fmtDateLabel(dateStr) {
+            const [y, m, d] = dateStr.split('-').map(Number);
+            return `${m}월 ${d}일`;
+        }
+
+        async function loadReservationSummary() {
+            const box = document.getElementById('reservation-summary');
+            if (!reservationId) {
+                box.innerHTML = '<p class="text-on-surface-variant">예약 정보 없이 들어오셨어요. <a class="text-primary underline" href="index.html">공간찾기로 이동</a></p>';
+                return;
+            }
+            try {
+                const res = await fetch(`${API_BASE}/reservations/${reservationId}`);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const reservation = await res.json();
+                const spaceRes = await fetch(`${API_BASE}/spaces/${reservation.space_id}`);
+                const spaceData = (await spaceRes.json()).space;
+
+                let timeLabel;
+                if (reservation.reservation_type === 'package') {
+                    timeLabel = spaceData.package_hours || '올나잇 패키지';
+                } else {
+                    const end = (reservation.start_hour + reservation.hours) % 24;
+                    timeLabel = `${String(reservation.start_hour).padStart(2, '0')}:00 - ${String(end).padStart(2, '0')}:00 (${reservation.hours}시간)`;
+                }
+
+                box.innerHTML = `
+                    <div class="flex items-center gap-stack-md">
+                        <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">event_available</span>
+                        <div>
+                            <h3 class="font-headline-sm text-headline-sm text-primary">예약 요약</h3>
+                            <p class="font-body-md text-body-md text-on-primary-fixed-variant">${spaceData.name} | ${fmtDateLabel(reservation.date)} ${timeLabel}</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-label-md text-label-md text-primary-container font-bold">합계 ${reservation.total_price.toLocaleString()}원</p>
+                    </div>`;
+            } catch (err) {
+                console.error(err);
+                box.innerHTML = '<p class="text-error">예약 정보를 불러오지 못했습니다.</p>';
+            }
+        }
+
+        function renderProductCard(product) {
+            const imageHtml = product.image_url
+                ? `<div class="w-full h-full bg-cover bg-center" style="background-image: url('${product.image_url}')"></div>`
+                : `<span class="material-symbols-outlined text-[48px] text-on-surface-variant">shopping_bag</span>`;
+            return `
+                <div class="bg-surface-container-lowest rounded-xl overflow-hidden ambient-shadow flex flex-col transition-transform hover:scale-[1.02] duration-300">
+                    <div class="aspect-video w-full overflow-hidden bg-surface-container-low flex items-center justify-center">
+                        ${imageHtml}
+                    </div>
+                    <div class="p-stack-md flex flex-col flex-grow">
+                        <h4 class="font-headline-sm text-headline-sm text-on-surface mb-stack-xs">${product.name}</h4>
+                        <p class="font-body-md text-body-md text-on-surface-variant mb-stack-md flex-grow">${product.target_space_types.join(', ')}에 어울리는 보완상품</p>
+                        <div class="flex items-center justify-between mt-auto">
+                            <span class="font-headline-sm text-headline-sm text-primary">${product.price.toLocaleString()}원</span>
+                            <button class="add-to-cart h-10 px-stack-lg bg-surface-container text-primary font-bold rounded-lg hover:bg-primary hover:text-on-primary transition-all active:scale-95" data-id="${product.id}">담기</button>
+                        </div>
+                    </div>
+                </div>`;
+        }
+
+        async function loadRecommendations() {
+            const grid = document.getElementById('product-grid');
+            const badge = document.getElementById('ai-badge');
+            try {
+                const res = await fetch(`${API_BASE}/recommendations`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json; charset=utf-8' },
+                    body: JSON.stringify({ space_type: spaceTypeParam, capacity: guestCountParam }),
+                });
+                const data = await res.json();
+                if (data.source === 'fallback') {
+                    badge.innerHTML = '<span class="material-symbols-outlined text-[16px]">auto_awesome</span> 기본 추천';
+                    badge.classList.remove('bg-secondary-container');
+                    badge.classList.add('bg-surface-container-low', 'text-on-surface-variant');
+                }
+                if (!data.products || !data.products.length) {
+                    grid.innerHTML = '<p class="col-span-3 text-center text-on-surface-variant py-8">추천할 상품이 없습니다.</p>';
+                    return;
+                }
+                grid.innerHTML = data.products.map(renderProductCard).join('');
+                document.querySelectorAll('.add-to-cart').forEach(btn => {
+                    btn.addEventListener('click', () => addToCart(btn));
+                });
+            } catch (err) {
+                console.error(err);
+                grid.innerHTML = '<p class="col-span-3 text-center text-error py-8">추천 상품을 불러오지 못했습니다. 백엔드 서버 연결을 확인해주세요.</p>';
+            }
+        }
+
+        async function addToCart(btn) {
+            const productId = btn.dataset.id;
+            btn.disabled = true;
+            try {
+                await fetch(`${API_BASE}/cart`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json; charset=utf-8' },
+                    body: JSON.stringify({ session_id: getSessionId(), item_type: 'product', ref_id: productId, quantity: 1 }),
+                });
+                btn.textContent = '담김';
+                btn.classList.add('bg-tertiary-container', 'text-on-tertiary-container');
+                await refreshCartCount();
+            } catch (err) {
+                console.error(err);
+                btn.disabled = false;
+                alert('장바구니 담기에 실패했습니다.');
+            }
+        }
+
+        async function refreshCartCount() {
+            try {
+                const res = await fetch(`${API_BASE}/cart/${getSessionId()}`);
+                const items = await res.json();
+                document.getElementById('cart-count').textContent = items.length;
+            } catch (e) { /* 표시만 실패, 무시 */ }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadReservationSummary();
+            loadRecommendations();
+            refreshCartCount();
+        });
+    </script>
+</body></html>
