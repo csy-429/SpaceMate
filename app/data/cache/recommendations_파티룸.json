@@ -6,7 +6,7 @@
     "target_space_types": [
       "파티룸"
     ],
-    "image_url": null
+    "image_url": "images/케이크.jpg"
   },
   {
     "id": "pd02",
@@ -15,7 +15,7 @@
     "target_space_types": [
       "파티룸"
     ],
-    "image_url": null
+    "image_url": "images/풍선파.jpg"
   },
   {
     "id": "pd03",
@@ -25,6 +25,6 @@
       "회의실",
       "파티룸"
     ],
-    "image_url": null
+    "image_url": "images/다과세트.jpg"
   }
 ]
